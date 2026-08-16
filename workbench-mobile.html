@@ -7,95 +7,293 @@
 <title>个人工作台</title>
 <style>
   :root {
-    --page-bg: #1a1d26;
-    --surface-card: #232733;
-    --surface-nested: #2a2f3d;
-    --border: #333949;
-    --border-input: #3d4456;
-    --text: #e8eaef;
-    --text-secondary: #9aa2b4;
-    --text-tertiary: #6b7286;
-    --accent: #c9a96a;
-    --accent-muted: rgba(201,169,106,.15);
-    --on-accent: #1a1d26;
-    --module-1: #5a8f7b;
-    --module-2: #5f7aa8;
-    --module-3: #c9a96a;
-    --module-4: #a86b5f;
-    --module-5: #7d7ba8;
-    --danger: #c25d5f;
-    --danger-muted: rgba(194,93,95,.15);
-    --drawer-bg: #12151c;
-    --drawer-bg-top: #1a1e28;
-    --drawer-text: #e8eaef;
-    --drawer-text-mute: rgba(232,234,239,.5);
-    --drawer-hover: rgba(232,234,239,.08);
-    --drawer-active: rgba(201,169,106,.12);
+    /* 暖黑调背景（深棕黑而非纯蓝黑，更温润有质感） */
+    --page-bg: #141311;
+    --page-bg-2: #181614;
+    /* 卡面：玻璃态半透明叠层 */
+    --surface-card: rgba(248, 244, 235, 0.045);
+    --surface-card-2: rgba(248, 244, 235, 0.06);
+    --surface-nested: rgba(248, 244, 235, 0.025);
+    --surface-solid: #1e1b17;
+    /* 描边：极细高光描边 + 内阴影组合营造立体感 */
+    --border: rgba(248, 244, 235, 0.07);
+    --border-strong: rgba(248, 244, 235, 0.11);
+    --border-input: rgba(248, 244, 235, 0.09);
+    /* 文字：暖米白渐变层次 */
+    --text: #f1ece0;
+    --text-secondary: #b4ab9a;
+    --text-tertiary: #79705f;
+    /* 高级金色主色（低饱和暖金，高级珠宝感） */
+    --accent: #c9b181;
+    --accent-deep: #a88b57;
+    --accent-light: #e3d3ae;
+    --accent-muted: rgba(201, 177, 129, 0.12);
+    --accent-glow: rgba(201, 177, 129, 0.22);
+    --on-accent: #181207;
+    /* 5赛道莫兰迪高级配色（低饱和+微灰调） */
+    --track-mh: #b89664;     /* 梦幻：暖琥珀 */
+    --track-ai: #8793b0;     /* AI：雾霾蓝 */
+    --track-lan: #859e82;    /* 兰花：灰松绿 */
+    --track-eat: #b27a55;    /* 零食：陶土橙 */
+    --track-life: #9587a8;   /* 人生：烟紫 */
+    /* 兼容原变量名 */
+    --module-1: #859e82;
+    --module-2: #8793b0;
+    --module-3: #c9b181;
+    --module-4: #a56b52;
+    --module-5: #9587a8;
+    --danger: #a86060;
+    --danger-muted: rgba(168, 96, 96, 0.15);
+    /* 抽屉 */
+    --drawer-bg: #0c0a08;
+    --drawer-bg-top: #14120f;
+    --drawer-text: #eae3d1;
+    --drawer-text-mute: rgba(234, 227, 209, 0.48);
+    --drawer-hover: rgba(234, 227, 209, 0.05);
+    --drawer-active: rgba(201, 177, 129, 0.1);
     --greet-image: url("assets/greet-banner.jpg");
-    --page-texture: none;
-    --radius-control: 8px;
-    --radius-tile: 12px;
-    --radius-card: 16px;
-    --radius-sheet: 22px;
-    --shadow-card: 0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.25);
-    --shadow-overlay: 0 10px 28px rgba(0,0,0,.5);
-    --font: -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
-    --nav-h: 62px;
+    /* 质感：微光噪点叠加 + 玻璃模糊 */
+    --glass-blur: blur(18px) saturate(140%);
+    /* 圆角：克制的中圆角，更精致 */
+    --radius-control: 9px;
+    --radius-tile: 13px;
+    --radius-card: 18px;
+    --radius-sheet: 24px;
+    /* 阴影：多层柔光投影，营造悬浮感 */
+    --shadow-card:
+      0 0 0 1px rgba(248, 244, 235, 0.025),
+      0 1px 0 rgba(255, 255, 255, 0.02) inset,
+      0 8px 24px -8px rgba(0, 0, 0, 0.5);
+    --shadow-card-strong:
+      0 0 0 1px rgba(248, 244, 235, 0.04),
+      0 1px 0 rgba(255, 255, 255, 0.03) inset,
+      0 14px 34px -10px rgba(0, 0, 0, 0.58);
+    --shadow-overlay:
+      0 20px 50px -12px rgba(0, 0, 0, 0.7),
+      0 0 0 1px rgba(248, 244, 235, 0.05);
+    --font: -apple-system, "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+    --nav-h: 64px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; }
   body {
-    background: var(--page-bg);
-    color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.5;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(201, 177, 129, 0.05), transparent 60%),
+      radial-gradient(900px 500px at -10% 20%, rgba(149, 135, 168, 0.035), transparent 60%),
+      radial-gradient(700px 500px at 50% 110%, rgba(178, 122, 85, 0.035), transparent 60%),
+      var(--page-bg);
+    color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.58;
     -webkit-font-smoothing: antialiased;
     max-width: 480px; margin: 0 auto; position: relative;
     min-height: 100vh; overflow-x: hidden;
+    letter-spacing: 0.01em;
   }
-  .app { padding: 0 16px calc(var(--nav-h) + 26px); }
+  /* 极淡噪点层：消除渐变条带，增强胶片质感 */
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    opacity: .032;
+    z-index: 999;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.8 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-repeat: repeat;
+    mix-blend-mode: overlay;
+  }
+  .app { padding: 0 18px calc(var(--nav-h) + 30px); }
   svg { display: block; }
+  /* 顶部吸顶栏：玻璃态 + 微光描边 */
   .topbar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px;
-    padding: 14px 2px 12px; backdrop-filter: blur(10px);
-    background: linear-gradient(180deg, color-mix(in srgb, var(--page-bg) 94%, transparent), color-mix(in srgb, var(--page-bg) 50%, transparent)); }
-  .topbar .menu-btn { width: 38px; height: 38px; border: none; border-radius: var(--radius-tile); background: var(--surface-card);
-    box-shadow: var(--shadow-card); display: grid; place-items: center; cursor: pointer; color: var(--text); }
-  .topbar .title { font-size: 16px; font-weight: 700; letter-spacing: -.01em; flex: 1; line-height: 1.2; }
-  .topbar .title small { display:block; font-size: 11px; font-weight: 500; color: var(--text-secondary); letter-spacing:.02em; margin-top: 2px; }
-  .date-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary);
-    background: var(--surface-card); border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px; box-shadow: var(--shadow-card); }
-  .card { background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
-  .sec-title { display:flex; align-items:center; gap:9px; font-size: 14px; font-weight: 700; margin: 24px 2px 12px; letter-spacing: -.01em; }
-  .sec-title::before { content:""; width: 3px; height: 13px; border-radius: 2px; background: var(--accent); }
-  .greet { position: relative; overflow: hidden; margin-top: 10px; padding: 22px 20px 24px; border-radius: var(--radius-card);
-    border: 1px solid var(--border); box-shadow: var(--shadow-card); min-height: 132px;
-    background: var(--surface-nested) var(--greet-image) right center / cover no-repeat; }
-  .greet::before { content:""; position:absolute; inset:0; pointer-events:none;
-    background: linear-gradient(100deg, var(--surface-nested) 30%, color-mix(in srgb, var(--surface-nested) 70%, transparent) 48%, transparent 70%); }
+    padding: 16px 2px 14px; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+    background: linear-gradient(180deg, rgba(20, 19, 17, 0.88) 0%, rgba(20, 19, 17, 0.62) 55%, rgba(20, 19, 17, 0) 100%); }
+  .topbar::after { content:""; position:absolute; left:-18px; right:-18px; bottom:0; height:1px; background:linear-gradient(90deg, transparent, var(--border), transparent); }
+  .topbar .menu-btn { width: 40px; height: 40px; border: none; border-radius: var(--radius-tile);
+    background: var(--surface-card); border:1px solid var(--border);
+    box-shadow: var(--shadow-card); display: grid; place-items: center; cursor: pointer; color: var(--text);
+    transition: transform .15s ease; }
+  .topbar .menu-btn:active { transform: scale(.94); }
+  .topbar .title { font-size: 15.5px; font-weight: 600; letter-spacing: 0.005em; flex: 1; line-height: 1.25; color: var(--text); }
+  .topbar .title small { display:block; font-size: 11px; font-weight: 500; color: var(--text-tertiary); letter-spacing: .03em; margin-top: 3px; text-transform: uppercase; }
+  .date-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-secondary);
+    background: var(--surface-card); border: 1px solid var(--border); border-radius: 999px; padding: 7px 13px; box-shadow: var(--shadow-card);
+    font-weight: 500; }
+  /* 基础卡片：玻璃态 + 顶部高光描边 + 内阴影 */
+  .card {
+    background: var(--surface-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    position: relative;
+  }
+  .card::before {
+    content:""; position:absolute; inset:0; border-radius: inherit; pointer-events:none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0) 40%);
+  }
+  /* 区块标题：极简竖线，强调留白 */
+  .sec-title { display:flex; align-items:center; gap:9px; font-size: 13px; font-weight: 600; margin: 28px 2px 13px; letter-spacing: 0.02em; color: var(--text-secondary); text-transform: uppercase; }
+  .sec-title::before { content:""; width: 2px; height: 11px; border-radius: 1px; background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+  /* 问候卡：深邃渐变 + 暖光氛围 */
+  .greet { position: relative; overflow: hidden; margin-top: 14px; padding: 24px 22px 26px; border-radius: var(--radius-card);
+    border: 1px solid var(--border); box-shadow: var(--shadow-card-strong); min-height: 140px;
+    background:
+      radial-gradient(400px 200px at 90% 0%, rgba(201, 177, 129, 0.13), transparent 60%),
+      linear-gradient(135deg, #1c1914 0%, #161410 100%);
+    backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
+  .greet::after {
+    content:""; position:absolute; inset:0; pointer-events:none; border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 45%),
+                linear-gradient(0deg, rgba(201, 177, 129, 0.04), transparent 50%);
+  }
   .greet > * { position: relative; z-index: 1; }
-  .greet h1 { font-size: 26px; font-weight: 800; letter-spacing: -.03em; }
-  .greet p { color: var(--text-secondary); font-size: 13px; margin-top: 5px; }
-  .greet .add { position: absolute; top: 16px; right: 16px; z-index: 2; border:none; cursor:pointer;
-    display:inline-flex; align-items:center; gap:6px; background: var(--accent); color:var(--on-accent);
-    font-size: 13px; font-weight: 700; padding: 9px 15px 9px 12px; border-radius: 999px; box-shadow: var(--shadow-overlay); }
-  .quote { margin-top: 16px; padding: 16px 18px; border-radius: var(--radius-card);
-    background: var(--surface-card); border: 1px solid var(--border); box-shadow: var(--shadow-card); position: relative; }
-  .quote::before { content:""; position:absolute; left:0; top:14px; bottom:14px; width:3px; border-radius:2px; background: var(--accent); }
-  .quote .tag { display:inline-flex; align-items:center; gap:6px; font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 9px; }
-  .quote .txt { font-size: 16px; font-weight: 600; line-height: 1.55; color: var(--text); }
-  /* 每日资讯入口卡片 */
-  .news-entry { display:flex; align-items:center; gap:14px; margin-top:14px; padding:16px 18px;
-    background: linear-gradient(135deg, rgba(95,122,168,.18), var(--surface-card));
-    border:1px solid rgba(95,122,168,.4); position:relative; }
-  .news-entry::before { content:""; position:absolute; right:0; top:0; bottom:0; width:4px; background:linear-gradient(180deg,#c9a96a,#5a8f7b); border-radius:0 var(--radius-card) var(--radius-card) 0; }
-  .news-entry .ne-icon { flex:0 0 auto; width:52px; height:52px; border-radius:14px; display:grid; place-items:center; font-size:26px; background:rgba(201,169,106,.15); }
-  .news-entry .ne-body { flex:1; min-width:0; }
-  .news-entry .ne-title { font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px; }
-  .news-entry .ne-date { font-size:11px; padding:2px 7px; border-radius:999px; background:rgba(201,169,106,.18); color:var(--accent); font-weight:700; }
-  .news-entry .ne-sub { font-size:12.5px; color:var(--text-secondary); margin-top:4px; line-height:1.5; }
-  .news-entry .ne-tags { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
-  .news-entry .nt { font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; }
-  .news-entry .nt.n1 { background:rgba(201,169,106,.18); color:#c9a96a; }
-  .news-entry .nt.n2 { background:rgba(95,122,168,.2); color:#7a96c9; }
-  .news-entry .nt.n3 { background:rgba(90,143,123,.2); color:#7fbf9f; }
+  .greet h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em;
+    background: linear-gradient(180deg, #f6f1e4 0%, #d6ccb5 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: var(--text); }
+  .greet p { color: var(--text-secondary); font-size: 13px; margin-top: 6px; font-weight: 500; letter-spacing: 0.02em; }
+  .greet .add { position: absolute; top: 18px; right: 18px; z-index: 2; border:none; cursor:pointer;
+    display:inline-flex; align-items:center; gap:6px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+    color:var(--on-accent);
+    font-size: 13px; font-weight: 600; padding: 9px 15px 9px 12px; border-radius: 999px;
+    box-shadow: 0 4px 14px -4px var(--accent-glow), 0 0 0 1px rgba(201, 177, 129, 0.3) inset; }
+  .greet .add:active { transform: scale(.96); }
+  /* 今日一句：极简侧边金条 */
+  .quote { margin-top: 14px; padding: 18px 20px 18px 22px; border-radius: var(--radius-card);
+    background: var(--surface-card); border: 1px solid var(--border); box-shadow: var(--shadow-card);
+    position: relative; backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); }
+  .quote::before {
+    content:""; position:absolute; left:0; top:18px; bottom:18px; width:2px; border-radius:2px;
+    background: linear-gradient(180deg, var(--accent-light), var(--accent-deep));
+    box-shadow: 0 0 10px var(--accent-glow);
+  }
+  .quote::after { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 45%); }
+  .quote .tag { display:inline-flex; align-items:center; gap:6px; font-size: 10.5px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .quote .txt { font-size: 15px; font-weight: 500; line-height: 1.7; color: var(--text); letter-spacing: 0.01em; }
+  /* 每日资讯入口卡片：渐变玻璃卡 */
+  .news-entry { display:flex; align-items:center; gap:14px; margin-top:16px; padding:18px 20px;
+    background:
+      radial-gradient(300px 180px at 0% 0%, rgba(201, 177, 129, 0.08), transparent 60%),
+      var(--surface-card);
+    border:1px solid var(--border-strong);
+    position:relative; border-radius: var(--radius-card);
+    backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--shadow-card);
+    cursor: pointer; transition: transform .18s ease, box-shadow .18s ease; }
+  .news-entry:active { transform: scale(.99); box-shadow: var(--shadow-card-strong); }
+  .news-entry::after { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 40%); }
+  .news-entry::before { content:""; position:absolute; right:0; top:0; bottom:0; width:3px;
+    background: linear-gradient(180deg, var(--accent-light), var(--track-eat), var(--track-lan));
+    border-radius: 0 var(--radius-card) var(--radius-card) 0; opacity: .85; }
+  .news-entry .ne-icon { flex:0 0 auto; width:54px; height:54px; border-radius:15px; display:grid; place-items:center; font-size:28px;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), transparent 50%),
+      var(--accent-muted);
+    border: 1px solid var(--accent-glow);
+    position: relative; z-index: 1; }
+  .news-entry .ne-body { flex:1; min-width:0; position: relative; z-index: 1; }
+  .news-entry .ne-title { font-size:15.5px; font-weight:700; display:flex; align-items:center; gap:8px; color: var(--text); }
+  .news-entry .ne-date { font-size:10.5px; padding:3px 8px; border-radius:999px; background: var(--accent-muted); color:var(--accent-light); font-weight:700; letter-spacing: 0.02em; border:1px solid var(--accent-glow); }
+  .news-entry .ne-sub { font-size:12.5px; color:var(--text-secondary); margin-top:5px; line-height:1.6; font-weight: 500; }
+  .news-entry .ne-tags { display:flex; gap:6px; margin-top:9px; flex-wrap:wrap; position: relative; z-index: 1; }
+  .news-entry .nt { font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:999px; letter-spacing: 0.02em; }
+  .news-entry .nt.n1 { background: rgba(184, 150, 100, 0.14); color: #d2b282; border: 1px solid rgba(184, 150, 100, 0.22); }
+  .news-entry .nt.n2 { background: rgba(135, 147, 176, 0.16); color: #9eaabf; border: 1px solid rgba(135, 147, 176, 0.22); }
+  .news-entry .nt.n3 { background: rgba(133, 158, 130, 0.16); color: #9db39a; border: 1px solid rgba(133, 158, 130, 0.22); }
+  /* 5赛道横滑卡片：高定设计 —— 玻璃+微浮雕+光晕 */
+  .track-scroll { display:flex; gap:12px; overflow-x:auto; padding:6px 2px 18px; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch;
+    scrollbar-width: none; }
+  .track-scroll::-webkit-scrollbar { display: none; }
+  .track-card {
+    position:relative; flex:0 0 auto; width:136px; padding:18px 16px 16px;
+    border-radius: calc(var(--radius-card) - 1px);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+    cursor:pointer; scroll-snap-align:start; overflow:hidden;
+    transition: transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s ease;
+    backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+  }
+  .track-card::before {
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:
+      radial-gradient(200px 120px at 20% 0%, color-mix(in srgb, currentColor 16%, transparent), transparent 60%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 45%);
+  }
+  .track-card::after {
+    content:""; position:absolute; left:0; right:0; top:0; height:2.5px;
+    background: linear-gradient(90deg, currentColor, color-mix(in srgb, currentColor 40%, transparent));
+    opacity: .9;
+  }
+  .track-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-card-strong); }
+  .track-card:active { transform: scale(.965) translateY(0); }
+  .track-card .track-dot {
+    position:absolute; top:16px; right:15px; width:9px; height:9px; border-radius:50%;
+    background: currentColor;
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, currentColor 22%, transparent),
+      0 0 10px color-mix(in srgb, currentColor 50%, transparent);
+  }
+  .track-card .track-emoji {
+    position: relative; z-index: 1;
+    font-size: 32px; line-height: 1; margin-bottom: 12px;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35)) saturate(1.08);
+  }
+  .track-card .track-name {
+    position: relative; z-index: 1;
+    font-size: 14.5px; font-weight: 700; letter-spacing: 0; margin-bottom: 4px;
+    color: var(--text);
+  }
+  .track-card .track-stat {
+    position: relative; z-index: 1;
+    font-size: 11.5px; color: var(--text-secondary); font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .track-card .track-plat {
+    position: relative; z-index: 1;
+    display:inline-flex; align-items:center; gap:4px; margin-top:11px; font-size:10px; font-weight:700;
+    padding: 4px 10px; border-radius: 999px;
+    background: color-mix(in srgb, currentColor 12%, transparent);
+    color: currentColor;
+    border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+    letter-spacing: 0.03em;
+  }
+  /* 赛道制作流程：精致胶囊 + 柔光连接 */
+  .pipeline { display:flex; align-items:center; gap:3px; overflow-x:auto; -webkit-overflow-scrolling:touch;
+    padding: 4px 0 6px; scrollbar-width: none; }
+  .pipeline::-webkit-scrollbar { display: none; }
+  .pipe-step {
+    flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:5px; padding:11px 12px 10px; min-width:72px;
+    border-radius: var(--radius-tile);
+    background: var(--surface-nested);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .pipe-step::before { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 50%); }
+  .pipe-step.active {
+    background:
+      radial-gradient(100px 60px at 50% 0%, color-mix(in srgb, currentColor 18%, transparent), transparent 70%),
+      color-mix(in srgb, currentColor 9%, var(--surface-nested));
+    border-color: color-mix(in srgb, currentColor 30%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 10%, transparent) inset;
+  }
+  .pipe-step .pipe-idx {
+    position:absolute; top:5px; left:6px; font-size:9px; font-weight:700;
+    color: var(--text-tertiary); opacity: .8;
+    letter-spacing: 0.04em;
+  }
+  .pipe-step.active .pipe-idx { color: currentColor; opacity: .7; }
+  .pipe-step .pipe-name {
+    font-size: 11.5px; font-weight: 600; color: var(--text);
+    white-space:nowrap; letter-spacing: 0.01em;
+  }
+  .pipe-step.active .pipe-name { color: currentColor; font-weight: 700; }
+  .pipe-step .pipe-cnt { font-size:10.5px; font-weight:700; color: currentColor; }
+  .pipe-arrow {
+    flex:0 0 auto; color: var(--text-tertiary); display:grid; place-items:center;
+    padding: 0 2px;
+  }
   .rings { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 20px 6px; margin-top: 14px; }
   .ring { display:flex; flex-direction:column; align-items:center; gap: 8px; }
   .ring .dial { position: relative; width: 68px; height: 68px; }
@@ -163,8 +361,13 @@
   .hero-bar { height: 5px; border-radius: 999px; background: var(--border); overflow:hidden; margin-top: 10px; }
   .hero-bar i { display:block; height:100%; border-radius:999px; }
   .nav { position: fixed; left: 50%; transform: translateX(-50%); bottom: 0; width: 100%; max-width: 480px; height: var(--nav-h);
-    background: rgba(35,39,51,.92); backdrop-filter: blur(14px); border-top: 1px solid var(--border);
+    background:
+      linear-gradient(180deg, rgba(20,19,17,0) 0%, rgba(20,19,17,0.82) 35%, rgba(20,19,17,0.94) 100%);
+    backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+    border-top: 1px solid var(--border);
     display: grid; grid-template-columns: repeat(5,1fr); align-items: center; z-index: 30; padding-bottom: env(safe-area-inset-bottom); }
+  .nav::before { content:""; position:absolute; left:0; right:0; top:0; height:1px;
+    background: linear-gradient(90deg, transparent, rgba(248,244,235,0.06), transparent); }
   .nav .n { display:flex; flex-direction:column; align-items:center; gap: 4px; cursor:pointer; color: var(--text-tertiary); font-size: 10px; font-weight: 500; }
   .nav .n.active { color: var(--accent); font-weight: 700; }
   .scrim { position: fixed; inset: 0; background: color-mix(in srgb, var(--text) 42%, transparent); z-index: 40; opacity:0; pointer-events:none; }
@@ -347,7 +550,7 @@
   <div class="dh">
     <button class="dclose" id="drawerClose"></button>
     <div class="brand" id="drawerBrand"><span id="brandEmoji">🚀</span><span class="brand-cam" id="brandCam"></span></div>
-    <div><h2 id="drawerName">创作者工作台</h2><p id="drawerSlogan">梦幻西游 · AI · 兰花 · 短视频</p></div>
+    <div><h2 id="drawerName">创作者工作台</h2><p id="drawerSlogan">梦幻 · AI · 兰花 · 80后零食 · 人生感想</p></div>
   </div>
   <div class="dsep"></div>
   <div id="drawerList"></div>
@@ -356,14 +559,27 @@
 </aside>
 <script>
 const CONFIG = {
-  storageKey: "workbench-creator-v1",
+  storageKey: "workbench-creator-v2",
   owner: "创作者工作台",
-  slogan: "梦幻西游 · AI · 兰花 · 短视频",
+  slogan: "梦幻 · AI · 兰花 · 80后零食 · 人生感想",
   brand: "🚀",
+  // ========== 5条赛道定义（每条赛道有独立的制作流程）==========
+  tracks: [
+    { key:"mh",   name:"梦幻西游", emoji:"🟡", color:"#b89664", platform:"抖音",
+      pipeline:["选题","脚本","拍摄","剪辑","封面","发布"] },
+    { key:"ai",   name:"AI资讯",   emoji:"🔵", color:"#8793b0", platform:"抖音",
+      pipeline:["选题","脚本","录屏","剪辑","发布"] },
+    { key:"lan",  name:"兰花知识", emoji:"🟢", color:"#859e82", platform:"视频号",
+      pipeline:["选题","脚本","拍摄","剪辑","发布"] },
+    { key:"eat",  name:"80后零食", emoji:"🍜", color:"#b27a55", platform:"抖音",
+      pipeline:["文案","网上抓素材","剪辑制作","配音","发布"] },
+    { key:"life", name:"人生感想", emoji:"🌙", color:"#9587a8", platform:"视频号",
+      pipeline:["文案","制作","配音","配乐","发布"] },
+  ],
   quotes: [
     "内容创作贵在坚持，每天进步一点点。",
     "专注当下，把一条视频做好胜过十条半成品。",
-    "知识是最好的投资，学习梦幻西游、AI、兰花都值得。",
+    "五条赛道，每条都是一棵树，每天浇一点水。",
     "输出倒逼输入，做视频让你学得更扎实。",
     "给本周的内容做个收尾，下周更从容。",
     "好好休息也是创作的一部分，灵感会来找你。",
@@ -390,56 +606,61 @@ const CONFIG = {
   modules: [
     {
       key: "todo", name: "今日计划", icon: "list", tint: "rgba(201,169,106,.15)", color: "var(--accent)",
-      type: "todo", desc: "短视频创作与每日任务追踪",
+      type: "todo", desc: "5条赛道每日任务追踪",
       priorities: [
         { key: "P0", label: "今日必做", color: "rgba(194,93,95,.18)", text: "#e88a8c" },
         { key: "P1", label: "优先处理", color: "rgba(201,169,106,.18)", text: "#d9bf8d" },
         { key: "P2", label: "有空再做", color: "rgba(90,143,123,.18)", text: "#8abaa5" },
       ],
       seed: [
-        { id: 101, title: "制作抖音号梦幻西游视频", priority: "P0", done: false, note: "选题：梦幻西游五开阵容推荐，3-5分钟讲解", pinned: true },
-        { id: 102, title: "制作视频号兰花知识短视频", priority: "P0", done: false, note: "选题：兰花浇水时间与光照管理，60秒干货" },
-        { id: 103, title: "搜索整理AI新模式/新产品资讯", priority: "P1", done: false, note: "关注：新模型发布、AI工具更新、行业新闻" },
-        { id: 104, title: "整理梦幻西游游戏知识库", priority: "P1", done: false, note: "补充：门派平衡、装备搭配、赚钱攻略" },
-        { id: 105, title: "学习兰花养护新知识", priority: "P2", done: true, note: "查阅：季节性换盆、病虫害防治" },
+        { id: 101, title: "写脚本：学校门口的炸串", priority: "P0", done: false, note: "🍜 80后零食 · 文案方向：80后小学门口炸串回忆", pinned: true, track:"eat" },
+        { id: 102, title: "剪辑：梦幻五开赚钱EP2", priority: "P0", done: false, note: "🟡 梦幻 · 剪辑进度75%，今天收尾", track:"mh" },
+        { id: 103, title: "写脚本：中年人的孤独感", priority: "P0", done: false, note: "🌙 人生感想 · 文案方向：人到中年的社交圈变化", track:"life" },
+        { id: 104, title: "网上抓素材：80后零食包装", priority: "P1", done: false, note: "🍜 80后零食 · 找老包装袋图片、老广告素材", track:"eat" },
+        { id: 105, title: "整理本周AI资讯→选题", priority: "P1", done: false, note: "🔵 AI · 从每日资讯里挑2-3个热点做成选题", track:"ai" },
+        { id: 106, title: "学习兰花养护：夏季浇水", priority: "P2", done: true, note: "🟢 兰花 · 已学：见干见湿、早晚浇水", track:"lan" },
       ],
     },
     {
       key: "checkin", name: "每日打卡", icon: "leaf", tint: "rgba(90,143,123,.18)", color: "var(--module-1)",
-      type: "checkin", desc: "每日知识学习与内容输出打卡",
+      type: "checkin", desc: "5条赛道每日打卡",
       seed: [
-        { id: 201, title: "学习梦幻西游游戏知识", log: {} },
-        { id: 202, title: "阅读AI新模式/新产品资讯", log: {} },
-        { id: 203, title: "学习兰花种植养护知识", log: {} },
-        { id: 204, title: "发布抖音号视频", log: {} },
-        { id: 205, title: "发布视频号视频", log: {} },
+        { id: 201, title: "🟡 梦幻：学习游戏知识", log: {} },
+        { id: 202, title: "🔵 AI：阅读资讯/新模式", log: {} },
+        { id: 203, title: "🟢 兰花：学习养护知识", log: {} },
+        { id: 204, title: "🍜 80后零食：找素材/写文案", log: {} },
+        { id: 205, title: "🌙 人生感想：写文案/找配乐", log: {} },
+        { id: 206, title: "📱 发布抖音号视频", log: {} },
+        { id: 207, title: "📱 发布视频号视频", log: {} },
       ],
     },
     {
       key: "goal", name: "长期目标", icon: "target", tint: "rgba(168,107,95,.18)", color: "var(--module-4)",
-      type: "progress", unit: "个", desc: "内容创作与知识积累长期目标",
+      type: "progress", unit: "个", desc: "5条赛道长期目标",
       seed: [
-        { id: 301, title: "抖音号粉丝增长", current: 0, target: 10000, unit: "粉丝", note: "目标1万粉，专注梦幻西游垂直内容" },
-        { id: 302, title: "视频号粉丝增长", current: 0, target: 5000, unit: "粉丝", note: "目标5千粉，兰花知识+生活分享方向" },
-        { id: 303, title: "梦幻西游知识库条目", current: 0, target: 100, unit: "条", note: "系统整理门派、装备、宝宝、任务、赚钱攻略" },
-        { id: 304, title: "AI资讯笔记积累", current: 0, target: 200, unit: "条", note: "记录AI新模式、新产品、新闻动态" },
-        { id: 305, title: "兰花知识笔记积累", current: 0, target: 80, unit: "条", note: "记录品种辨识、养护技巧、病虫害防治" },
+        { id: 301, title: "🟡 梦幻·抖音号粉丝", current: 0, target: 10000, unit: "粉丝", note: "梦幻西游垂直内容，目标1万粉" },
+        { id: 302, title: "🔵 AI·抖音号粉丝", current: 0, target: 8000, unit: "粉丝", note: "AI资讯科普，目标8千粉" },
+        { id: 303, title: "🟢 兰花·视频号粉丝", current: 0, target: 5000, unit: "粉丝", note: "兰花养护知识，目标5千粉" },
+        { id: 304, title: "🍜 80后零食·抖音号粉丝", current: 0, target: 15000, unit: "粉丝", note: "怀旧零食回忆向，目标1.5万粉" },
+        { id: 305, title: "🌙 人生感想·视频号粉丝", current: 0, target: 8000, unit: "粉丝", note: "中年人共鸣内容，目标8千粉" },
+        { id: 306, title: "本月发布视频数", current: 0, target: 30, unit: "条", note: "5赛道合计，日均1条" },
       ],
     },
     {
       key: "notes", name: "内容记录", icon: "book", tint: "rgba(95,122,168,.18)", color: "var(--module-2)",
-      type: "note", desc: "梦幻西游 · AI资讯 · 兰花知识 · 视频创意",
-      moods: ["梦幻西游", "AI资讯", "兰花知识", "视频创意"],
+      type: "note", desc: "梦幻 · AI · 兰花 · 80后零食 · 人生感想",
+      moods: ["梦幻西游", "AI资讯", "兰花知识", "80后零食", "人生感想"],
       fields: [
         { key: "source", label: "信息来源", type: "text", placeholder: "如：官网/论坛/公众号" },
         { key: "importance", label: "重要程度", type: "select", options: ["普通","重要","必读"] },
         { key: "subtag", label: "二级标签", type: "text", placeholder: "如：#五开攻略 #大模型 #浇水" },
       ],
       seed: [
-        { id: 401, title: "梦幻西游：五开阵容核心思路", content: "五开阵容核心：1个主封+1个辅助+3个输出。推荐门派组合：无底洞+普陀山+龙宫+魔王寨+化生寺。效率优先，血量和抗性要平衡。", mood: "梦幻西游", date: isoToday(), importance: "重要", source: "梦幻西游官方论坛" },
-        { id: 402, title: "AI新模式：Agent 自主智能体", content: "2026年Agent技术趋势：多模态推理、工具调用能力增强、长上下文处理。重点关注：代码生成Agent、数据分析Agent、内容创作Agent三个方向。", mood: "AI资讯", date: isoToday(), importance: "必读", source: "行业新闻汇总" },
-        { id: 403, title: "兰花：夏季浇水注意事项", content: "夏季兰花浇水：1. 早晚浇水，避免正午；2. 水温与室温接近；3. 浇透盆底见水流出为准；4. 保持通风，防止闷根。春兰、蕙兰夏季需水量略大于建兰。", mood: "兰花知识", date: isoToday(), importance: "重要", source: "兰花养护手册" },
-        { id: 404, title: "抖音视频创意：梦幻西游新手避坑", content: "视频标题：「梦幻西游新手必看！这5个坑千万别踩」。内容结构：开篇3秒痛点吸引 → 分别讲5个坑（配游戏画面）→ 结尾关注引导。时长控制3-4分钟，配轻松背景音乐。", mood: "视频创意", date: isoToday(), importance: "重要" },
+        { id: 401, title: "梦幻：五开阵容核心思路", content: "五开阵容核心：1个主封+1个辅助+3个输出。推荐门派组合：无底洞+普陀山+龙宫+魔王寨+化生寺。效率优先，血量和抗性要平衡。", mood: "梦幻西游", date: isoToday(), importance: "重要", source: "梦幻西游官方论坛" },
+        { id: 402, title: "AI：Agent自主智能体趋势", content: "2026年Agent技术趋势：多模态推理、工具调用能力增强、长上下文处理。重点关注：代码生成Agent、数据分析Agent、内容创作Agent三个方向。", mood: "AI资讯", date: isoToday(), importance: "必读", source: "行业新闻汇总" },
+        { id: 403, title: "兰花：夏季浇水注意事项", content: "夏季兰花浇水：1.早晚浇水，避免正午；2.水温与室温接近；3.浇透盆底见水流出为准；4.保持通风，防止闷根。春兰、蕙兰夏季需水量略大于建兰。", mood: "兰花知识", date: isoToday(), importance: "重要", source: "兰花养护知识库" },
+        { id: 404, title: "80后零食：学校门口的炸串回忆", content: "文案方向：80后小学门口炸串摊的回忆。素材清单：老式炸串推车图片、老调料包装、校门口老照片（网上找）。结构：开场回忆 → 炸串品种盘点 → 调料秘密 → 结尾共鸣。", mood: "80后零食", date: isoToday(), importance: "重要", source: "素材整理" },
+        { id: 405, title: "人生感想：中年人的孤独感", content: "文案方向：人到中年，朋友圈越来越小。结构：年轻时朋友遍地 → 中年后各自忙碌 → 真正留下的三两个人 → 结尾：孤独不是坏事，是筛选。配乐方向：怀旧钢琴曲。", mood: "人生感想", date: isoToday(), importance: "重要" },
       ],
     },
   ],
@@ -473,8 +694,9 @@ const CONFIG = {
       "兰花知识":   ["兰花","兰","兰草","蝴蝶兰","建兰","蕙兰","春兰","墨兰","石斛","洋兰","养护","浇水","施肥","换盆"],
     },
   },
-  // ============== 视频选题库 ==============
+  // ============== 视频选题库（按赛道定制流程）==============
   videoTopics: {
+    // 通用状态（兼容旧数据）
     statuses: [
       { key:0, label:"💡待拍",   cls:"vstat-s0" },
       { key:1, label:"📝脚本中", cls:"vstat-s1" },
@@ -487,6 +709,8 @@ const CONFIG = {
       { name:"60秒干货模板", content:"【开头3秒·痛点钩子】\n你有没有遇到过XXX的问题？今天60秒帮你搞定！\n\n【干货1】\n核心要点：___\n配画面：___\n\n【干货2】\n核心要点：___\n配画面：___\n\n【干货3】\n核心要点：___\n配画面：___\n\n【结尾·引导关注】\n觉得有用就收藏+关注，下期更精彩！" },
       { name:"3分钟攻略模板", content:"【开场·抛出问题】\n今天来聊聊XXX，很多新手都会踩坑。\n\n【方案1】\n适用场景：___\n具体操作：___\n注意事项：___\n\n【方案2】\n适用场景：___\n具体操作：___\n注意事项：___\n\n【方案3】\n适用场景：___\n具体操作：___\n注意事项：___\n\n【总结+关注引导】\n三套方案总有一套适合你，点赞收藏备用，关注我不迷路！" },
       { name:"5分钟深度模板", content:"【背景引入·30秒】\n最近XXX事件/更新引起了大家关注...\n\n【核心点1·1分钟】\n深度分析：___\n数据/案例：___\n\n【核心点2·1分钟】\n深度分析：___\n数据/案例：___\n\n【核心点3·1分钟】\n深度分析：___\n数据/案例：___\n\n【趋势预测+互动·30秒】\n我的判断是___，你怎么看？评论区聊聊！\n关注我，持续追踪XXX最新动态。" },
+      { name:"🍜 80后零食回忆模板", content:"【开头3秒·回忆杀】\n还记得小时候校门口的那个味道吗？\n\n【零食介绍】\n零食名：___\n价格：___（当年多少钱）\n口感描述：___\n网上素材：找老包装图片/老广告视频\n\n【童年场景】\n谁买给你的：___\n什么场合吃：___\n配画面：老教室/操场/小卖部老照片\n\n【结尾·共鸣引导】\n你还记得这个味道吗？评论区打出你的童年零食！\n关注我，带你重温80后的味道。" },
+      { name:"🌙 人生感想模板", content:"【开头·安静的陈述】\n人到中年，最大的变化不是皱纹，而是___\n\n【展开·场景对比】\n年轻时：___\n中年后：___\n配画面：黑白老照片/空旷场景/独处画面\n\n【转折·感悟】\n后来我才明白，___\n配乐：___（怀旧钢琴/吉他曲）\n\n【结尾·留白】\n不是所有问题都有答案，但有些答案时间会给。\n如果你也有同感，点个赞，让彼此知道不孤单。" },
     ],
   },
   // ============== 发布记录 ==============
@@ -496,9 +720,9 @@ const CONFIG = {
   // ============== 浏览器通知 ==============
   notifications: {
     schedule: [
-      { time:"09:00", title:"整理AI资讯素材", body:"该看看今天抓的AI/梦幻/兰花资讯了" },
-      { time:"15:00", title:"学习+拍素材", body:"兰花学习15分钟，顺便拍点素材" },
-      { time:"20:00", title:"剪视频时间到", body:"今晚抖音/视频号要发视频啦" },
+      { time:"09:00", title:"整理资讯素材", body:"该看看今天的AI/梦幻/兰花资讯了" },
+      { time:"14:00", title:"80后零食素材", body:"该找今天的80后零食素材了" },
+      { time:"20:00", title:"剪视频时间到", body:"今晚该剪视频/发抖音/视频号了" },
     ],
   },
   // ============== AI 写作配置 ==============
@@ -517,8 +741,11 @@ const CONFIG = {
   // ============== 粉丝追踪 ==============
   followerTrack: {
     platforms: [
-      { key:"douyin", name:"抖音", color:"#c25d5f" },
-      { key:"shipinhao", name:"视频号", color:"#5f7aa8" },
+      { key:"douyin_mh", name:"抖音·梦幻", color:"#b89664" },
+      { key:"douyin_ai", name:"抖音·AI", color:"#8793b0" },
+      { key:"douyin_eat", name:"抖音·80后零食", color:"#b27a55" },
+      { key:"sph_lan", name:"视频号·兰花", color:"#859e82" },
+      { key:"sph_life", name:"视频号·人生", color:"#9587a8" },
     ],
   },
 };
@@ -591,13 +818,21 @@ const store = {
     } catch(e){} }
     const d = {};
     CONFIG.modules.forEach(m => d[m.key] = JSON.parse(JSON.stringify(m.seed||[])));
-    d.video = []; d.publish = []; d.followers = {}; d.__pomodoro = { sessions: 0, date: isoToday() };
+    d.video = [
+      { id:9001, title:"梦幻西游五开赚钱攻略EP2", track:"mh", status:2, platform:"抖音", duration:"3分钟", topic:"五开日常赚钱路线", script:"【开头3秒】五开怎么每天稳定赚200万？\n\n【干货1】抓鬼路线优化\n【干货2】副本优先级\n【干货3】摆摊技巧\n\n【结尾】点赞收藏，下期讲装备搭配" },
+      { id:9002, title:"AI Agent是什么？60秒讲透", track:"ai", status:1, platform:"抖音", duration:"60秒", topic:"AI Agent入门科普", script:"【开头】听说AI Agent要取代App了？\n\n【干货1】什么是Agent\n【干货2】和ChatGPT的区别\n【干货3】现在能做什么\n\n【结尾】关注我，持续追踪AI前沿" },
+      { id:9003, title:"80后校门口炸串回忆", track:"eat", status:0, platform:"抖音", duration:"3分钟", topic:"80后小学门口炸串", script:"【开头3秒·回忆杀】还记得校门口那个炸串摊吗？\n\n【零食介绍】炸串品种/价格/口感\n网上素材：找老式炸串推车图片、老调料包装\n\n【童年场景】谁买给你的/什么场合吃\n\n【结尾】评论区打出你的童年零食！" },
+      { id:9004, title:"兰花夏季浇水正确方法", track:"lan", status:3, platform:"视频号", duration:"60秒", topic:"兰花夏季养护", script:"【开头】夏天兰花怎么浇水才不烂根？\n\n【核心】见干见湿原则\n【技巧】早晚浇水/避开正午\n\n【结尾】关注我，学更多兰花养护知识" },
+      { id:9005, title:"中年人的孤独不是坏事", track:"life", status:0, platform:"视频号", duration:"3分钟", topic:"中年人社交圈变化", script:"【开头】人到中年，朋友圈越来越小\n\n【展开】年轻时朋友遍地→中年后各自忙碌\n配画面：黑白老照片/空旷场景\n\n【转折】孤独不是坏事，是筛选\n配乐：怀旧钢琴曲\n\n【结尾】点个赞，让彼此知道不孤单" },
+    ];
+    d.publish = []; d.followers = {}; d.__pomodoro = { sessions: 0, date: isoToday() };
     return d;
   },
   save(){ localStorage.setItem(CONFIG.storageKey, JSON.stringify(data)); },
 };
 let data = store.load();
 let view = "home";
+let videoTrackFilter = null; // 视频选题库按赛道筛选
 function persist(){ store.save(); render(); }
 
 $("#btn-menu").innerHTML = icon("menu", 20);
@@ -673,30 +908,48 @@ function renderHome(){
     const d = q.action ? `data-action="${q.action}"` : `data-module="${q.module}"`;
     return `<button class="qbtn" ${d}><span class="e" style="background:${q.tint};color:${q.color}">${icon(q.icon,20)}<i class="qplus">${icon("plus",10,3)}</i></span><span class="l">${q.label}</span></button>`;
   }).join("");
+  // 5赛道概览横滑卡片
+  const trackCards = CONFIG.tracks.map(t=>{
+    const vidItems = (data.video||[]).filter(x=>x.track===t.key);
+    const inProgress = vidItems.filter(x=>x.status<3).length;
+    const published = vidItems.filter(x=>x.status>=3).length;
+    return `<div class="track-card" data-track="${t.key}" style="color:${t.color};border-color:${t.color}33">
+      <span class="track-dot"></span>
+      <div class="track-emoji">${t.emoji}</div>
+      <div class="track-name" style="color:var(--text)">${t.name}</div>
+      <div class="track-stat">在拍${inProgress} · 已发${published}</div>
+      <div class="track-plat">${t.platform}</div>
+    </div>`;
+  }).join("");
   $("#screen").innerHTML = `
     <div class="greet"><div><h1>${hi}</h1><p>欢迎回到${CONFIG.owner}</p></div></div>
-    <div class="news-entry card" id="newsEntry">
-      <div class="ne-icon">📰</div>
-      <div class="ne-body">
-        <div class="ne-title">每日资讯汇总 <span class="ne-date">${isoToday()}</span></div>
-        <div class="ne-sub">🎮 梦幻西游 · 🤖 AI资讯 · 🌺 兰花知识 — 每天早8点自动更新</div>
-        <div class="ne-tags"><span class="nt n1">8条</span><span class="nt n2">8条</span><span class="nt n3">8条</span></div>
-      </div>
-      <button class="btn sm" id="newsGoBtn">查看 ›</button>
-    </div>
     <div class="quote"><span class="tag">${icon("quote",13)} 今日一句</span><div class="txt">${esc(q)}</div></div>
     <div class="sec-title">今日概览</div>
     <div class="card rings">${rings}</div>
     <div class="sec-title">置顶任务</div>
     <div class="pin-list">${pinned}</div>
+    <div class="sec-title">5条赛道<span style="font-size:11px;color:var(--text-tertiary);font-weight:400;margin-left:auto">← 滑动 →</span></div>
+    <div class="track-scroll">${trackCards}</div>
     <div class="sec-title">快速记录</div>
     <div class="quick-grid">${quick}</div>
     <div class="panel trend-panel"><div class="ph">${icon("chart",15)} ${CONFIG.trend.title}${hasTrend?`<span class="avg">均 ${avg}${CONFIG.trend.unit}</span>`:''}</div>
-      ${trend}${hasTrend?`<div class="trend-x"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>`:''}</div>`;
-  // 每日资讯入口跳转
+      ${trend}${hasTrend?`<div class="trend-x"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>`:''}</div>
+    <div class="news-entry card" id="newsEntry" style="margin-top:20px">
+      <div class="ne-icon">📰</div>
+      <div class="ne-body">
+        <div class="ne-title">今日资讯 <span class="ne-date">${isoToday()}</span></div>
+        <div class="ne-sub">梦幻8 · AI8 · 兰花中文8</div>
+      </div>
+      <button class="btn sm" id="newsGoBtn">进入 ›</button>
+    </div>`;
+  // 资讯入口跳转
   const goNews=$("#newsGoBtn"); if(goNews) goNews.onclick=()=>{
     window.open("news_pages/news-"+isoToday()+".html","_blank");
   };
+  // 赛道卡片点击→跳转选题库并按赛道筛选
+  document.querySelectorAll("[data-track]").forEach(el=>el.onclick=()=>{
+    videoTrackFilter=el.dataset.track; view="video"; render();
+  });
   wireHome();
 }
 
@@ -1369,45 +1622,74 @@ function renderBackupView(){
 
 // ==================== 功能2：视频选题库 + 脚本模板 ====================
 function renderVideoView(){
-  const items = data.video || [];
+  const allItems = data.video || [];
+  // 赛道筛选标签
+  const trackChips = `<button class="tag-chip ${!videoTrackFilter?'on':''}" data-tf="">全部</button>` +
+    CONFIG.tracks.map(t=>`<button class="tag-chip ${videoTrackFilter===t.key?'on':''}" data-tf="${t.key}" style="${videoTrackFilter===t.key?`background:${t.color};border-color:${t.color};color:rgba(255,255,255,.94)`:''}">${t.emoji} ${t.name}</button>`).join("");
+  // 当前选中赛道信息
+  const curTrack = videoTrackFilter ? CONFIG.tracks.find(t=>t.key===videoTrackFilter) : null;
+  const items = curTrack ? allItems.filter(x=>x.track===curTrack.key) : allItems;
   const stats = CONFIG.videoTopics.statuses;
   const byStatus = stats.map(s => ({...s, count: items.filter(x=>(x.status||0)===s.key).length}));
   const tmplBtns = CONFIG.videoTopics.templates.map((t,i)=>`<button class="tag-chip" data-tmpl="${i}">${t.name}</button>`).join("");
+  // 当前赛道制作流程展示
+  const pipelineHtml = curTrack ? (()=>{
+    const steps = curTrack.pipeline;
+    const vidItems = items;
+    const stepCounts = steps.map((s,i)=>{
+      // 粗略映射：流程第i步 ≈ status=i 的选题数
+      const c = vidItems.filter(x=>(x.status||0)===i).length;
+      return {name:s, count:c, idx:i};
+    });
+    return `<div class="panel" style="margin-bottom:14px"><div class="ph" style="margin-bottom:10px">${curTrack.emoji} ${curTrack.name}制作流程<span style="margin-left:auto;font-size:11px;color:var(--text-secondary);font-weight:500">${curTrack.platform}</span></div>
+      <div class="pipeline">${stepCounts.map((s,i)=>`<div class="pipe-step ${s.count?'active':''}" style="${s.count?`border-color:${curTrack.color};color:${curTrack.color}`:''}">
+        <div class="pipe-idx">${i+1}</div><div class="pipe-name">${s.name}</div>${s.count?`<div class="pipe-cnt">${s.count}</div>`:''}</div>${i<steps.length-1?`<div class="pipe-arrow">${icon("chevron",14,2)}</div>`:''}`).join("")}</div></div>`;
+  })() : "";
   const list = items.length ? items.map(x=>{
     const st = stats.find(s=>s.key===(x.status||0)) || stats[0];
+    const trk = CONFIG.tracks.find(t=>t.key===x.track);
     return `<div class="rec"><div class="acts"><button class="del js-vdel" data-id="${x.id}">${icon("trash",16)}</button></div>
       <div class="top"><div class="body" data-vedit="${x.id}">
-        <div class="rname">${esc(x.title||'未命名')}</div>
+        <div class="rname">${trk?`<span style="margin-right:6px">${trk.emoji}</span>`:''}${esc(x.title||'未命名')}</div>
         <div class="rmeta">
           <span class="vstat ${st.cls}"><span class="dot"></span>${st.label}</span>
+          ${trk?`<span class="badge" style="background:${trk.color}22;color:${trk.color}">${trk.name}</span>`:''}
           ${x.platform?`<span class="badge" style="background:var(--accent-muted);color:var(--accent)">${esc(x.platform)}</span>`:''}
           ${x.duration?`<span style="font-size:12px;color:var(--text-secondary)">${esc(x.duration)}</span>`:''}
         </div>
         ${x.script?`<div class="rnote" style="max-height:60px;overflow:hidden">${esc(x.script.slice(0,150))}…</div>`:''}
         ${x.topic?`<div class="rnote" style="font-size:12px">📌 ${esc(x.topic)}</div>`:''}
       </div></div></div>`;
-  }).join("") : `<div class="empty"><span class="e">${icon("video",26)}</span><div>还没有选题，点上方「新建」添加第一个视频选题</div></div>`;
-  $("#screen").innerHTML = `<div class="greet"><div><h1>视频选题库</h1><p>从创意到发布全流程追踪</p></div>
+  }).join("") : `<div class="empty"><span class="e">${icon("video",26)}</span><div>${curTrack?`「${curTrack.name}」赛道还没有选题`:'还没有选题'}，点上方「新建」添加${curTrack?'第一个'+curTrack.name:''}选题</div></div>`;
+  $("#screen").innerHTML = `<div class="greet"><div><h1>视频选题库</h1><p>${curTrack?curTrack.emoji+' '+curTrack.name+' · 从素材到发布':'从创意到发布全流程追踪'}</p></div>
       <button class="add" id="btn-vadd">${icon("plus",16,2.2)}新建选题</button></div>
     <div style="margin-top:16px">
-      <div class="sec-title">状态统计</div>
+      <div class="sec-title">赛道筛选</div>
+      <div class="tag-chips" style="margin-bottom:14px">${trackChips}</div>
+      ${pipelineHtml}
+      <div class="sec-title">状态统计<span style="font-size:11px;color:var(--text-tertiary);font-weight:400;margin-left:auto">${items.length} 个选题</span></div>
       <div class="panel"><div class="bar-list">${byStatus.map(s=>`<div class="bar-row"><span class="bar-ic" style="color:currentColor"><span class="vstat ${s.cls}" style="padding:4px 8px">${s.label}</span></span><span class="bar-name">${s.count} 个</span></div>`).join("")}</div></div>
       <div class="sec-title">脚本模板（点击使用）</div>
       <div class="tag-chips" style="margin-bottom:12px">${tmplBtns}</div>
       <div class="sec-title">选题列表</div>${list}</div>`;
-  $("#btn-vadd").onclick=()=>openVideoEditor(null);
+  $("#btn-vadd").onclick=()=>openVideoEditor(null, videoTrackFilter);
   document.querySelectorAll("[data-vedit]").forEach(el=>el.onclick=()=>openVideoEditor(items.find(x=>x.id==el.dataset.vedit)));
   document.querySelectorAll(".js-vdel").forEach(el=>el.onclick=e=>{ e.stopPropagation(); data.video=data.video.filter(x=>x.id!=el.dataset.id); persist(); });
   document.querySelectorAll("[data-tmpl]").forEach(el=>el.onclick=()=>{
     const idx=+el.dataset.tmpl; const tmpl=CONFIG.videoTopics.templates[idx];
-    openVideoEditor({id:Date.now(), title:"", status:0, platform:"", duration:"", topic:"", script:tmpl.content});
+    openVideoEditor({id:Date.now(), title:"", status:0, platform:curTrack?curTrack.platform:"抖音", duration:"60秒", topic:"", script:tmpl.content, track:videoTrackFilter||""}, videoTrackFilter);
+  });
+  document.querySelectorAll("[data-tf]").forEach(el=>el.onclick=()=>{
+    videoTrackFilter = el.dataset.tf || null; render();
   });
 }
-function openVideoEditor(item){
-  const editing=!!item; const d=item||{id:Date.now(),title:"",status:0,platform:"抖音",duration:"60秒",topic:"",script:""};
+function openVideoEditor(item, presetTrack){
+  const editing=!!item; const d=item||{id:Date.now(),title:"",status:0,platform:"抖音",duration:"60秒",topic:"",script:"",track:presetTrack||""};
   const st=CONFIG.videoTopics.statuses; const pf=CONFIG.videoTopics.platforms; const du=CONFIG.videoTopics.durations;
+  const tracks=CONFIG.tracks;
   const overlay=document.createElement("div"); overlay.className="overlay";
   overlay.innerHTML=`<div class="modal"><div class="grab"></div><h2>${editing?'编辑':'新建'}选题</h2>
+    <div class="field"><label>所属赛道</label><select id="v-track">${tracks.map(t=>`<option value="${t.key}" ${t.key===d.track?'selected':''}>${t.emoji} ${t.name}（${t.platform}）</option>`).join("")}</select></div>
     <div class="field"><label>选题标题</label><input id="v-title" value="${attr(d.title)}" placeholder="如：梦幻西游五开阵容推荐"/></div>
     <div class="frow">
       <div class="field"><label>状态</label><select id="v-status">${st.map(s=>`<option value="${s.key}" ${s.key==d.status?'selected':''}>${s.label}</option>`).join("")}</select></div>
@@ -1422,6 +1704,10 @@ function openVideoEditor(item){
   const close=()=>overlay.remove();
   overlay.onclick=e=>{ if(e.target===overlay) close(); };
   overlay.querySelector("#v-cancel").onclick=close;
+  // 切换赛道时自动联动平台
+  overlay.querySelector("#v-track").onchange=e=>{
+    const trk=tracks.find(t=>t.key===e.target.value); if(trk){ overlay.querySelector("#v-platform").value=trk.platform; }
+  };
   overlay.querySelector("#v-ai").onclick=async()=>{
     const title=overlay.querySelector("#v-title").value.trim();
     const duration=overlay.querySelector("#v-duration").value;
@@ -1444,6 +1730,7 @@ function openVideoEditor(item){
   };
   overlay.querySelector("#v-save").onclick=()=>{
     d.title=overlay.querySelector("#v-title").value.trim()||"未命名";
+    d.track=overlay.querySelector("#v-track").value;
     d.status=+overlay.querySelector("#v-status").value;
     d.platform=overlay.querySelector("#v-platform").value;
     d.duration=overlay.querySelector("#v-duration").value;
