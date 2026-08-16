@@ -228,11 +228,13 @@
   .track-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-card-strong); }
   .track-card:active { transform: scale(.965) translateY(0); }
   .track-card .track-dot {
-    position:absolute; top:16px; right:15px; width:9px; height:9px; border-radius:50%;
-    background: currentColor;
-    box-shadow:
-      0 0 0 3px color-mix(in srgb, currentColor 22%, transparent),
-      0 0 10px color-mix(in srgb, currentColor 50%, transparent);
+    position:absolute; top:18px; right:17px;
+    width:7px; height:7px;
+    border: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    opacity: .62;
+    background: linear-gradient(135deg, currentColor 0%, transparent 60%);
+    background-clip: padding-box;
   }
   .track-card .track-emoji {
     position: relative; z-index: 1;
@@ -341,7 +343,7 @@
   .rec .rmeta { display:flex; flex-wrap:wrap; gap: 7px; margin-top: 7px; align-items:center; }
   .rec .rnote { color: var(--text-secondary); font-size: 12.5px; margin-top: 7px; white-space: pre-wrap; line-height: 1.55; }
   .badge { display:inline-flex; align-items:center; gap:5px; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; }
-  .badge .dot { width:6px;height:6px;border-radius:50%;background:currentColor; }
+  .badge .dot { width:5px; height:5px; background:currentColor; transform:rotate(45deg); }
   .rec .acts { position:absolute; top: 8px; right: 8px; display:flex; gap: 2px; }
   .rec .acts button { border:none; background:transparent; color: var(--text-tertiary); cursor:pointer;
     width: 30px; height: 30px; border-radius: var(--radius-control); display:grid; place-items:center; }
@@ -454,7 +456,7 @@
   .tag-chip.on { background:var(--accent); border-color:var(--accent); color:var(--on-accent); }
   /* === 视频选题状态 === */
   .vstat { display:inline-flex; align-items:center; gap:5px; padding:2px 9px; border-radius:999px; font-size:11px; font-weight:700; }
-  .vstat .dot { width:6px; height:6px; border-radius:50%; background:currentColor; }
+  .vstat .dot { width:5px; height:5px; background:currentColor; transform:rotate(45deg); }
   .vstat-s0 { color:#e88a8c; background:rgba(194,93,95,.15); } /* 待拍 */
   .vstat-s1 { color:#d9bf8d; background:rgba(201,169,106,.15); } /* 脚本中 */
   .vstat-s2 { color:#8ab8d8; background:rgba(95,122,168,.15); } /* 拍摄中 */
