@@ -132,7 +132,18 @@
   }
   /* 区块标题：极简竖线，强调留白 */
   .sec-title { display:flex; align-items:center; gap:9px; font-size: 13px; font-weight: 600; margin: 28px 2px 13px; letter-spacing: 0.02em; color: var(--text-secondary); text-transform: uppercase; }
-  .sec-title::before { content:""; width: 2px; height: 11px; border-radius: 1px; background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+  .sec-title::before {
+    content:"";
+    width: 14px; height: 14px;
+    display:inline-block; position: relative; flex:0 0 auto;
+  }
+  .sec-title::before {
+    background: linear-gradient(135deg, var(--accent) 0%, transparent 55%);
+    border: 1.5px solid var(--accent);
+    transform: rotate(45deg);
+    opacity: .9;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 8%, transparent);
+  }
   /* 问候卡：深邃渐变 + 暖光氛围 */
   .greet { position: relative; overflow: hidden; margin-top: 14px; padding: 24px 22px 26px; border-radius: var(--radius-card);
     border: 1px solid var(--border); box-shadow: var(--shadow-card-strong); min-height: 140px;
@@ -235,6 +246,14 @@
     opacity: .62;
     background: linear-gradient(135deg, currentColor 0%, transparent 60%);
     background-clip: padding-box;
+  }
+  .track-card .track-corner {
+    position:absolute; bottom:14px; right:14px;
+    width:4px; height:4px;
+    background: currentColor;
+    transform: rotate(45deg);
+    opacity: .55;
+    box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 12%, transparent);
   }
   .track-card .track-emoji {
     position: relative; z-index: 1;
@@ -424,7 +443,7 @@
   .donut { position:relative; width:104px; height:104px; flex:0 0 auto; }
   .donut-legend { flex:1; display:flex; flex-direction:column; gap:8px; }
   .legend-item { display:flex; align-items:center; gap:8px; font-size:12.5px; }
-  .legend-dot { width:9px; height:9px; border-radius:50%; flex:0 0 auto; }
+  .legend-dot { width:7px; height:7px; transform:rotate(45deg); flex:0 0 auto; }
   .legend-name { color:var(--text); font-weight:600; flex:1; }
   .cal-panel { margin-top:12px; }
   .cal-hd { display:flex; align-items:center; gap:10px; }
@@ -917,6 +936,7 @@ function renderHome(){
     const published = vidItems.filter(x=>x.status>=3).length;
     return `<div class="track-card" data-track="${t.key}" style="color:${t.color};border-color:${t.color}33">
       <span class="track-dot"></span>
+      <span class="track-corner"></span>
       <div class="track-emoji">${t.emoji}</div>
       <div class="track-name" style="color:var(--text)">${t.name}</div>
       <div class="track-stat">在拍${inProgress} · 已发${published}</div>
@@ -967,7 +987,8 @@ function trendSVG(series){
   });
   const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
   const area=line+` L ${padX+innerW} ${h-padBot} L ${padX} ${h-padBot} Z`;
-  const dots=pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="var(--surface-card)" stroke="var(--module-2)" stroke-width="2"/>`).join('');
+  const dots=pts.map(p=>{ const s=4.2; const x=+p[0].toFixed(1); const y=+p[1].toFixed(1);
+    return `<g transform="translate(${x},${y}) rotate(45)"><rect x="${-s/2}" y="${-s/2}" width="${s}" height="${s}" fill="var(--surface-card)" stroke="var(--module-2)" stroke-width="1.6"/></g>`; }).join('');
   return `<svg class="trend-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
     <defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--module-2)" stop-opacity=".28"/><stop offset="1" stop-color="var(--module-2)" stop-opacity="0"/></linearGradient></defs>
     <path d="${area}" fill="url(#tg)"/><path d="${line}" fill="none" stroke="var(--module-2)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>${dots}</svg>`;
@@ -982,7 +1003,7 @@ function donutSVG(segs){
       stroke-dasharray="${len.toFixed(2)} ${(c-len).toFixed(2)}" stroke-dashoffset="${(c-acc).toFixed(2)}" transform="rotate(-90 52 52)"/>`);
     acc+=len;
   });
-  return `<svg viewBox="0 0 104 104" width="104" height="104">${out.join("")}</svg>`;
+  return `<svg viewBox="0 0 104 104" width="104" height="104">${out.join("")}<g transform="translate(52 52) rotate(45)"><rect x="-4.5" y="-4.5" width="9" height="9" fill="var(--accent)" opacity=".85"/></g></svg>`;
 }
 
 let calMonth=null, calItemId=null;
