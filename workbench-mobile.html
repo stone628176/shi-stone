@@ -302,15 +302,26 @@
     flex:0 0 auto; color: var(--text-quiet); display:grid; place-items:center;
     padding: 0 var(--spacer-4);
   }
-  /* --- KPI 环/仪表盘 --- */
-  .rings { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--spacer-8); padding: var(--spacer-20) var(--spacer-4); margin-top: var(--spacer-16); }
-  .ring { display:flex; flex-direction:column; align-items:center; gap: var(--spacer-8); }
-  .ring .dial { position: relative; width: 68px; height: 68px; }
-  .ring .dial svg.gauge { transform: rotate(-90deg); width: 68px; height: 68px; }
-  .ring .dial .mid { position:absolute; inset:0; display:grid; place-items:center; }
-  .ring .pct { font: var(--w-strong) var(--text-title) var(--font-metric); }
-  .ring .lbl { font: var(--w-medium) var(--text-caption) var(--font); color: var(--text); }
-  .ring .sub { font: var(--w-regular) var(--text-caption) var(--font); color: var(--text-muted); }
+  /* --- 今日概览：Notion/Linear 风格·垂直进度条列表（彻底去环形/圆点装饰）--- */
+  .rings { display: flex; flex-direction: column; gap: var(--spacer-16); padding: var(--spacer-20); margin-top: var(--spacer-16); }
+  .ring { display: grid; grid-template-columns: 32px 1fr auto; align-items: center; gap: var(--spacer-12); cursor: pointer; }
+  .ring-ic { width: 32px; height: 32px; border-radius: var(--radius);
+    display: grid; place-items: center;
+    background: var(--surface-muted); color: var(--text-muted);
+    flex-shrink: 0; }
+  .ring-main { min-width: 0; }
+  .ring-top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--spacer-8); margin-bottom: var(--spacer-8); }
+  .ring-lbl { font: var(--weight-medium) var(--text-body) var(--font-sans); color: var(--text); }
+  .ring-sub { font: var(--weight-regular) var(--text-caption) var(--font-sans); color: var(--text-muted); margin-top: var(--spacer-4); }
+  .ring-bar { height: 4px; border-radius: 2px; background: var(--surface-muted); overflow: hidden; }
+  .ring-bar-fill { display: block; height: 100%; background: var(--brand); border-radius: 2px; transition: width .2s ease; }
+  .ring-kpi { text-align: right; font: var(--weight-strong) var(--text-title) var(--font-metric); color: var(--text); white-space: nowrap;
+    padding-left: var(--spacer-8); }
+  /* --- 趋势图：纯细线 + 水平淡网格 + 单焦点（最后一点），彻底删除圆点装饰 --- */
+  .trend-svg { width:100%; height: auto; display:block; }
+  .trend-svg .grid-line { stroke: var(--border); stroke-width: 1; stroke-dasharray: 2 4; opacity: .8; }
+  .trend-svg .trend-line { fill: none; stroke: var(--chart-series-1); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .trend-svg .trend-focus { fill: var(--chart-series-1); }  /* 只保留最后一点，r=1.5 极小实心，不喧宾夺主 */
   .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: var(--spacer-16); }
   .panel.trend-panel { margin-top: var(--spacer-12); }
   .panel .ph { display:flex; align-items:center; gap: var(--spacer-8); font: var(--w-medium) var(--text-body) var(--font); }
@@ -934,10 +945,21 @@ function renderHome(){
   const q = CONFIG.quotes[dow % CONFIG.quotes.length];
   const hour = now.getHours();
   const hi = hour<5?"夜深了":hour<11?"早上好":hour<13?"中午好":hour<18?"下午好":"晚上好";
+  // 今日概览：垂直列表式水平进度条（彻底替代环形进度，去装饰圆点/圆环）
   const rings = CONFIG.overview.map(o=>{
     const r=o.calc(data);
-    return `<div class="ring" data-open="${o.key}"><div class="dial">${ringSVG(r.value,o.color)}<span class="mid" style="color:${o.color}">${icon(o.icon,23)}</span></div>
-      <div class="pct">${r.value}%</div><div class="lbl">${o.label}</div><div class="sub">${r.sub}</div></div>`;
+    const pct = Math.max(0, Math.min(100, r.value));
+    return `<div class="ring" data-open="${o.key}">
+      <div class="ring-ic">${icon(o.icon,16)}</div>
+      <div class="ring-main">
+        <div class="ring-top">
+          <span class="ring-lbl">${o.label}</span>
+        </div>
+        <div class="ring-bar"><i class="ring-bar-fill" style="width:${pct}%"></i></div>
+        <div class="ring-sub">${r.sub}</div>
+      </div>
+      <div class="ring-kpi">${pct}%</div>
+    </div>`;
   }).join("");
   const pins=[];
   CONFIG.modules.forEach(m=>(data[m.key]||[]).forEach(x=>{ if(x.pinned) pins.push({m,x}); }));
@@ -1024,24 +1046,27 @@ function trendSVG(series){
     return [x,y];
   });
   const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
-  // Flat 规范：去掉渐变填充 area，去掉菱形装饰点，仅保留折线 + 圆点（中性填充 + 品牌描边）
-  const dots=pts.map(p=>{ const r=3.2; const x=+p[0].toFixed(1); const y=+p[1].toFixed(1);
-    return `<circle cx="${x}" cy="${y}" r="${r}" fill="var(--surface)" stroke="var(--module-2)" stroke-width="1.6"/>`; }).join('');
-  return `<svg class="trend-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
-    <path d="${line}" fill="none" stroke="var(--module-2)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>${dots}</svg>`;
+  // 极简线性图：三条水平淡网格 + 单折线（1.8px细线）+ 仅最后 1 点做极小实心焦点（彻底删除所有装饰圆点）
+  const gridYs = [padTop, padTop+innerH/2, padTop+innerH];
+  const grid = gridYs.map(gy => `<line class="grid-line" x1="${padX}" y1="${gy.toFixed(1)}" x2="${(w-padX).toFixed(1)}" y2="${gy.toFixed(1)}"/>`).join('');
+  const last = pts[pts.length-1];
+  const focus = last ? `<circle class="trend-focus" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="1.8"/>` : '';
+  return `<svg class="trend-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision">
+    ${grid}
+    <path class="trend-line" d="${line}"/>${focus}</svg>`;
 }
 
 function donutSVG(segs){
   const total=segs.reduce((s,x)=>s+x.amount,0)||1;
-  const r=42, c=2*Math.PI*r; let acc=0; const out=[];
+  const r=44, c=2*Math.PI*r; let acc=0; const out=[];
+  // 极简环形：stroke-width 从 14→8（细=克制），去掉 stroke-linecap（避免末端圆点膨胀）
   segs.forEach(s=>{
     const len=(s.amount/total)*c;
-    out.push(`<circle cx="52" cy="52" r="${r}" fill="none" stroke="${s.color}" stroke-width="14"
+    out.push(`<circle cx="52" cy="52" r="${r}" fill="none" stroke="${s.color}" stroke-width="8"
       stroke-dasharray="${len.toFixed(2)} ${(c-len).toFixed(2)}" stroke-dashoffset="${(c-acc).toFixed(2)}" transform="rotate(-90 52 52)"/>`);
     acc+=len;
   });
-  // Flat 规范：去掉中心装饰菱形（rotate(45) rect），仅保留纯环形图，不添加任何装饰焦点
-  return `<svg viewBox="0 0 104 104" width="104" height="104">${out.join("")}</svg>`;
+  return `<svg viewBox="0 0 104 104" width="104" height="104" shape-rendering="geometricPrecision">${out.join("")}</svg>`;
 }
 
 let calMonth=null, calItemId=null;
@@ -1130,7 +1155,8 @@ function wireHome(){
 }
 
 function renderInsight(){
-  const DONUT_COLORS=["var(--module-4)","var(--module-3)","var(--module-5)","var(--module-2)","var(--module-1)","var(--accent)"];
+  // 严格按 chart-series 顺序，不使用自定义 module 色或语义色
+  const DONUT_COLORS=["var(--chart-series-1)","var(--chart-series-2)","var(--chart-series-3)","var(--chart-series-4)","var(--chart-other)","var(--chart-other)"];
   const bars = CONFIG.modules.map(m=>{
     const it=data[m.key]||[]; let pct=0, label="";
     if(m.type==="todo"){ const d=it.filter(x=>x.done).length; pct=it.length?Math.round(d/it.length*100):0; label=`${d}/${it.length}`; }
