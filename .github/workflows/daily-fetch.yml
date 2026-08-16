@@ -1,0 +1,123 @@
+name: 每日资讯自动抓取+发布
+
+# 触发条件：
+#   1. 每天北京时间 08:00（UTC 00:00）
+#   2. 点仓库 Actions 里的 "Run workflow" 手动触发
+#   3. 推送到 main 分支时自动触发（第一次上传后立刻跑一次）
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      sync_days:
+        description: '向前补抓多少天（默认1，只抓当天）'
+        required: false
+        default: '1'
+      force:
+        description: '是否强制重抓（true/false）'
+        required: false
+        default: 'false'
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write   # 需要把生成的HTML/JSON写回仓库
+  pages: write      # 需要部署 GitHub Pages
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  fetch-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # 拿完整git历史，才能commit增量
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 时区改成北京（Asia/Shanghai）
+        run: |
+          sudo timedatectl set-timezone Asia/Shanghai
+          date
+          python -c "import datetime;print('Python今日:', datetime.date.today().isoformat())"
+
+      - name: 运行抓取脚本（北京时间每天抓，支持补抓N天）
+        env:
+          # 允许 Python 直接在 GitHub Actions VM 里做 HTTP 请求（不设代理）
+          PYTHONUNBUFFERED: 1
+        run: |
+          SYNC="${{ github.event.inputs.sync_days }}"
+          FORCE="${{ github.event.inputs.force }}"
+          if [ -z "$SYNC" ]; then SYNC="7"; fi     # 定时任务跑时默认补7天，防止哪天空了
+          ARGS="--sync $SYNC"
+          if [ "$FORCE" = "true" ]; then ARGS="$ARGS --force"; fi
+          echo "执行参数: python news_fetcher.py $ARGS"
+          python news_fetcher.py $ARGS
+
+      - name: 把生成的新HTML/JSON提交回仓库（归档历史数据）
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add news_data/*.json news_pages/*.html 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "没有新内容，跳过commit"
+          else
+            TODAY=$(date +%F)
+            git commit -m "auto: 每日资讯 ${TODAY} 自动更新"
+            git push
+          fi
+
+      - name: 生成 Pages 根目录首页（重定向到 news_pages/）
+        run: |
+          # 根路径放一个 index.html 直接跳到新闻列表页
+          cat > index.html <<'HTML'
+          <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+          <title>创作者工作台 · 每日资讯</title>
+          <meta http-equiv="refresh" content="0; url=news_pages/index.html">
+          <style>
+            body{margin:0;background:#1a1d26;color:#e8eaef;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;display:grid;place-items:center;padding:22px;}
+            .wrap{max-width:720px;width:100%;text-align:center;}
+            h1{font-size:28px;font-weight:800;margin:0 0 10px;}
+            p{color:#a7acba;font-size:14px;line-height:1.7;margin:8px 0 22px;}
+            a{display:inline-block;padding:11px 24px;background:#c9a96a;color:#1a1d26;border-radius:999px;font-weight:800;text-decoration:none;font-size:15px;}
+            .links{margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+            .links a{background:#232733;color:#e8eaef;border:1px solid #2f3443;padding:9px 18px;font-weight:700;font-size:13px;border-radius:999px;}
+          </style></head>
+          <body><div class="wrap">
+            <h1>📰 创作者工作台 · 每日资讯</h1>
+            <p>梦幻西游 · AI资讯 · 兰花知识 —— 每天北京时间8:00自动更新<br>
+               如果没有自动跳转，请点下方按钮进入：</p>
+            <a href="news_pages/index.html">→ 查看最新每日资讯</a>
+            <div class="links">
+              <a href="workbench-mobile.html">🎯 个人工作台首页</a>
+            </div>
+          </div></body></html>
+          HTML
+
+          # 新建 .nojekyll 告诉 GitHub 不要处理 Jekyll（下划线开头的目录不会被跳过）
+          touch .nojekyll
+
+      - name: 配置 Pages
+        uses: actions/configure-pages@v5
+
+      - name: 上传 Pages 产物（当前仓库全部文件都部署）
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
