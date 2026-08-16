@@ -73,7 +73,9 @@ jobs:
           else
             TODAY=$(date +%F)
             git commit -m "auto: 每日资讯 ${TODAY} 自动更新"
-            git push
+            git fetch origin main
+            git pull --rebase origin main
+            git push origin main
           fi
 
       - name: 生成 Pages 根目录首页（重定向到 news_pages/）
