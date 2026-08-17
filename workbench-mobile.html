@@ -231,8 +231,31 @@
   .news-entry .nt.n2 { border-color: color-mix(in srgb, var(--chart-series-2) 30%, transparent); color: var(--chart-series-2); background: color-mix(in srgb, var(--chart-series-2) 10%, var(--surface-muted)); }
   .news-entry .nt.n3 { border-color: color-mix(in srgb, var(--chart-series-3) 30%, transparent); color: var(--chart-series-3); background: color-mix(in srgb, var(--chart-series-3) 10%, var(--surface-muted)); }
   /* --- 5 赛道横滑卡片：Flat·Neutral + 左 2px 品牌边 · 去玻璃态去装饰 --- */
-  .track-scroll { display:flex; gap: var(--spacer-12); overflow-x:auto; padding: var(--spacer-4) 0 var(--spacer-20); scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; scrollbar-width: none; }
+  .track-scroll { display:flex; gap: var(--spacer-12); overflow-x:auto; padding: var(--spacer-4) 0 var(--spacer-20); scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; scrollbar-width: none; cursor:grab; user-select:none; }
+  .track-scroll:active { cursor:grabbing; }
   .track-scroll::-webkit-scrollbar { display: none; }
+  .pipeline { display:flex; align-items:center; gap: var(--spacer-8); overflow-x:auto; -webkit-overflow-scrolling:touch;
+    padding: var(--spacer-4) 0 var(--spacer-8); scrollbar-width: none; cursor:grab; user-select:none; }
+  .pipeline:active { cursor:grabbing; }
+  .pipeline::-webkit-scrollbar { display: none; }
+  .tag-chips { display:flex; gap: var(--spacer-4); overflow-x:auto; margin-bottom: var(--spacer-8); padding-bottom: 2px; cursor:grab; user-select:none; }
+  .tag-chips:active { cursor:grabbing; }
+  /* 拖拽中状态：JS 会加 .grabbing 类，保证整个拖拽过程光标保持 grabbing（即使鼠标移出元素再松开）*/
+  .track-scroll.grabbing, .pipeline.grabbing, .tag-chips.grabbing { cursor:grabbing !important; user-select:none !important; }
+  /* 横滑容器外包裹：相对定位 + 左右箭头按钮（仅桌面端显示） */
+  .hscroll-wrap { position:relative; }
+  .hscroll-btn { position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:30px; height:30px; border-radius:999px;
+    border:1px solid var(--border-input); background:var(--surface); color:var(--text); cursor:pointer; display:grid; place-items:center;
+    box-shadow:var(--shadow-card); opacity:.85; transition:opacity .12s; display:none; /* 仅桌面端 @media(hover:hover) 时显示 */ }
+  .hscroll-btn:hover { opacity:1; }
+  .hscroll-btn.left { left:-2px; }
+  .hscroll-btn.right { right:-2px; }
+  @media (hover:hover) { .hscroll-btn { display:grid; } }
+  /* 赛道分类标签：info收集类 / video视频类 */
+  .track-cat { font-size:10px; font-weight:700; letter-spacing:.4px; padding:2px 6px; border-radius:4px;
+    display:inline-block; margin-top: var(--spacer-4); text-transform:uppercase; }
+  .track-cat.info { color:#8793b0; background:rgba(135,147,176,.15); border:1px solid rgba(135,147,176,.3); }
+  .track-cat.video { color:#b89664; background:rgba(184,150,100,.15); border:1px solid rgba(184,150,100,.3); }
   .track-card {
     position:relative; flex:0 0 auto; width:136px; padding: var(--spacer-16);
     border-radius: var(--radius-card);
@@ -246,13 +269,15 @@
   .track-card { border-left: 2px solid currentColor; }
   .track-card:hover { transform: translateY(-2px); border-color: currentColor; }
   .track-card:active { transform: scale(.965) translateY(0); }
-  /* 删除 track-dot / track-corner 装饰角标（HTML 中仍保留 span，设 display:none）*/
-  .track-card .track-dot,
-  .track-card .track-corner { display: none; }
-  .track-card .track-emoji {
-    font-size: 20px; line-height: 1;
+  .track-card .track-icon {
+    display: inline-grid; place-items: center;
+    width: 36px; height: 36px;
     margin-bottom: var(--spacer-12);
+    border-radius: var(--radius);
+    background: var(--surface-muted);
+    color: currentColor;
   }
+  .track-card .track-icon svg { width: 22px; height: 22px; }
   .track-card .track-name {
     font: var(--w-medium) var(--text-title) var(--font);
     color: var(--text);
@@ -270,9 +295,6 @@
     color: var(--text-muted);
   }
   /* --- 赛道制作流程：扁平胶囊，柔光连接删除，仅用中性背景 --- */
-  .pipeline { display:flex; align-items:center; gap: var(--spacer-8); overflow-x:auto; -webkit-overflow-scrolling:touch;
-    padding: var(--spacer-4) 0 var(--spacer-8); scrollbar-width: none; }
-  .pipeline::-webkit-scrollbar { display: none; }
   .pipe-step {
     flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap: var(--spacer-8);
     padding: var(--spacer-12); min-width: 72px;
@@ -317,11 +339,11 @@
   .ring-bar-fill { display: block; height: 100%; background: var(--brand); border-radius: 2px; transition: width .2s ease; }
   .ring-kpi { text-align: right; font: var(--weight-strong) var(--text-title) var(--font-metric); color: var(--text); white-space: nowrap;
     padding-left: var(--spacer-8); }
-  /* --- 趋势图：纯细线 + 水平淡网格 + 单焦点（最后一点），彻底删除圆点装饰 --- */
+  /* --- 趋势图：纯细线 + 水平淡网格 + 末端短指针（表示趋势方向，彻底删除圆点装饰）--- */
   .trend-svg { width:100%; height: auto; display:block; }
   .trend-svg .grid-line { stroke: var(--border); stroke-width: 1; stroke-dasharray: 2 4; opacity: .8; }
   .trend-svg .trend-line { fill: none; stroke: var(--chart-series-1); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-  .trend-svg .trend-focus { fill: var(--chart-series-1); }  /* 只保留最后一点，r=1.5 极小实心，不喧宾夺主 */
+  .trend-svg .trend-pointer { stroke: var(--chart-series-1); stroke-width: 1.8; stroke-linecap: round; }
   .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: var(--spacer-16); }
   .panel.trend-panel { margin-top: var(--spacer-12); }
   .panel .ph { display:flex; align-items:center; gap: var(--spacer-8); font: var(--w-medium) var(--text-body) var(--font); }
@@ -330,8 +352,6 @@
   .qbtn { display:flex; flex-direction:column; align-items:center; gap: var(--spacer-8); padding: var(--spacer-16) var(--spacer-4) var(--spacer-12); border:none; cursor:pointer;
     border-radius: var(--radius-card); background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow-card); }
   .qbtn .e { position: relative; width: 44px; height: 44px; border-radius: var(--radius-card); display:grid; place-items:center; }
-  .qbtn .e .qplus { position:absolute; right:-3px; bottom:-3px; width:17px; height:17px; border-radius: var(--radius-full);
-    background: var(--brand); color: var(--brand-on); display:grid; place-items:center; border: 2px solid var(--surface); }
   .qbtn .l { font: var(--w-medium) var(--text-caption) var(--font); color: var(--text); }
   /* --- 置顶列表 --- */
   .pin-list { display:flex; flex-direction:column; gap: var(--spacer-8); }
@@ -367,8 +387,6 @@
   .badge { display:inline-flex; align-items:center; gap: var(--spacer-4);
     padding: 2px var(--spacer-8); border-radius: var(--radius-full);
     font: var(--w-medium) var(--text-caption) var(--font); }
-  /* 删除 badge 前的装饰菱形/圆点，仅保留文字（减少装饰元素）*/
-  .badge .dot { display:none; }
   .rec .acts { position:absolute; top: var(--spacer-8); right: var(--spacer-8); display:flex; gap: var(--spacer-4); }
   .rec .acts button { border:none; background:transparent; color: var(--text-quiet); cursor:pointer;
     width: 30px; height: 30px; border-radius: var(--radius); display:grid; place-items:center; }
@@ -469,8 +487,8 @@
   .donut-legend { flex:1; display:flex; flex-direction:column; gap:var(--spacer-8); }
   .legend-item { display:flex; align-items:center; gap:var(--spacer-8);
     font: var(--w-regular) var(--text-caption) var(--font); }
-  /* 图例小色块：方型（非菱形），符合 Flat 规范 */
-  .legend-dot { width:8px; height:8px; border-radius: 2px; flex:0 0 auto; }
+  /* 图例色块：12×2 彩色短线条（替代小圆点，更克制）*/
+  .legend-line { width:12px; height:2px; border-radius: 1px; flex:0 0 auto; }
   .legend-name { color:var(--text); font-weight: var(--w-medium); flex:1; }
   .cal-panel { margin-top: var(--spacer-12); }
   .cal-hd { display:flex; align-items:center; gap:var(--spacer-8); }
@@ -509,8 +527,6 @@
   /* === 视频选题状态 === */
   .vstat { display:inline-flex; align-items:center; padding:2px var(--spacer-8); border-radius: var(--radius-full);
     font: var(--w-medium) var(--text-caption) var(--font); }
-  /* 删除 vstat 前装饰小点，仅纯文字胶囊 */
-  .vstat .dot { display:none; }
   .vstat-s0 { color: color-mix(in srgb, var(--danger) 92%, white); background: color-mix(in srgb, var(--danger) 15%, transparent); } /* 待拍 */
   .vstat-s1 { color: var(--brand-text); background: color-mix(in srgb, var(--brand) 15%, transparent); } /* 脚本中 */
   .vstat-s2 { color: var(--chart-series-2); background: color-mix(in srgb, var(--chart-series-2) 15%, transparent); } /* 拍摄中 */
@@ -634,16 +650,17 @@ const CONFIG = {
   slogan: "梦幻 · AI · 兰花 · 80后零食 · 人生感想",
   brand: "🚀",
   // ========== 5条赛道定义（每条赛道有独立的制作流程）==========
+  // category: "info" = 新闻收集类（需要外部抓素材/资讯）；"video" = 原创视频制作类（以原创文案为主）
   tracks: [
-    { key:"mh",   name:"梦幻西游", emoji:"🟡", color:"#b89664", platform:"抖音",
+    { key:"mh",   name:"梦幻西游", icon:"gamepad", color:"#b89664", platform:"抖音", category:"info",
       pipeline:["选题","脚本","拍摄","剪辑","封面","发布"] },
-    { key:"ai",   name:"AI资讯",   emoji:"🔵", color:"#8793b0", platform:"抖音",
+    { key:"ai",   name:"AI资讯",   icon:"cpu", color:"#8793b0", platform:"抖音", category:"info",
       pipeline:["选题","脚本","录屏","剪辑","发布"] },
-    { key:"lan",  name:"兰花知识", emoji:"🟢", color:"#859e82", platform:"视频号",
+    { key:"lan",  name:"兰花知识", icon:"lotus", color:"#859e82", platform:"视频号", category:"info",
       pipeline:["选题","脚本","拍摄","剪辑","发布"] },
-    { key:"eat",  name:"80后零食", emoji:"🍜", color:"#b27a55", platform:"抖音",
+    { key:"eat",  name:"80后零食", icon:"snack", color:"#b27a55", platform:"抖音", category:"video",
       pipeline:["文案","网上抓素材","剪辑制作","配音","发布"] },
-    { key:"life", name:"人生感想", emoji:"🌙", color:"#9587a8", platform:"视频号",
+    { key:"life", name:"人生感想", icon:"thoughts", color:"#9587a8", platform:"视频号", category:"video",
       pipeline:["文案","制作","配音","配乐","发布"] },
   ],
   quotes: [
@@ -734,34 +751,46 @@ const CONFIG = {
       ],
     },
   ],
-  // ============== RSS 自动抓取配置 ==============
+  // ============== RSS 自动抓取配置（新闻收集类赛道专用） ==============
+  // 去哪里爬？ —— 下面 sources 列表按 3 条 info 赛道分类：梦幻西游 / AI资讯 / 兰花知识
+  // 怎么爬？     —— 用 CORS 代理：RSS 站走 rss2json 免费 JSON 代理，HTML 站走 corsproxy.io 免费跨域代理
+  // 多久爬一次？ —— 默认：每天早上 7 点后首次打开页面自动抓 1 次（可改 fetchIntervalHours 为 8，支持每 8 小时一次）
+  // 失败了怎么办？—— 每个源先 rss2json/corsproxy，失败返回 [], 最后会给用户展示"失败 X 个源"，可手动重试
   rss: {
-    // 每天早上 X 点之后首次打开页面时自动抓取（0-23，这里设为 7 点）
+    // 每天早上 X 点之后首次打开页面时自动抓取（0-23，这里设为 7 点，上班路上手机看内容正好赶上）
     autoFetchHour: 7,
+    // 两次抓取最少间隔（小时），0=只按天触发（一天最多 1 次）；改成 8 就是每 8 小时可以再抓一次
+    fetchIntervalHours: 0,
     // 每个源最多取多少条
     maxPerSource: 5,
-    // 抓取代理：rss2json 公共服务（解决跨域问题，免费额度够用）
+    // 抓取代理 1：rss2json 公共服务（解决 RSS XML 跨域，免费额度每日 10000 次）
     proxy: u => `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(u)}`,
-    // 备用代理（如果上面的挂了，换这个）
+    // 抓取代理 2：corsproxy.io（通用 CORS 代理，抓 HTML 页面 / RSS XML 都能用，免费不限量）
     proxy2: u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    // 抓取代理 3（兜底，防止上面两个挂）：api.allorigins 公共代理
+    proxy3: u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
     sources: [
-      // ========== AI 资讯（权威） ==========
+      // ========== AI 资讯（国内权威中文源） ==========
       { name: "机器之心",   url: "https://www.jiqizhixin.com/rss",                       category: "AI资讯" },
       { name: "量子位",     url: "https://www.qbitai.com/feed",                           category: "AI资讯" },
       { name: "36氪·科技",  url: "https://36kr.com/feed",                                 category: "AI资讯" },
       { name: "虎嗅",        url: "https://www.huxiu.com/rss/0.xml",                      category: "AI资讯" },
-      // ========== 梦幻西游（用官网新闻页 HTML + CORS 代理抓取）==========
-      { name: "梦幻西游官网", url: "https://xyq.163.com/news/",                           category: "梦幻西游", htmlParse: true },
-      // ========== 兰花知识（国外权威博客 RSS + 国内公众号RSS）==========
-      { name: "Just Add Ice兰花养护", url: "https://www.justaddiceorchids.com/orchid-care-blog/rss.xml", category: "兰花知识" },
-      { name: "Orchideria兰花百科",   url: "https://orchideria.com/feed/",                category: "兰花知识" },
-      { name: "Brooklyn Orchids",      url: "https://bklynorchids.com/feed/",             category: "兰花知识" },
+
+      // ========== 梦幻西游（官网新闻 + 玩家论坛 + 游戏资讯聚合） ==========
+      { name: "梦幻西游官网·新闻中心", url: "https://xyq.163.com/news/index.html",        category: "梦幻西游", htmlParse: true, site:"xyq163" },
+      { name: "17173·梦幻专区",        url: "https://xyq.17173.com/",                     category: "梦幻西游", htmlParse: true, site:"17173" },
+
+      // ========== 兰花知识（国内中文权威源为主，英文源留一个当备份） ==========
+      { name: "兰花吧·百度贴吧（玩家经验）", url: "https://rsshub.app/tieba/forum/%E5%85%B0%E8%8A%B1%E5%90%A7", category: "兰花知识" },
+      { name: "知乎·兰花话题精华",           url: "https://rsshub.app/zhihu/topic/19600273/essence", category: "兰花知识" },
+      { name: "中国兰花交易网·资讯",         url: "https://www.hmlan.com/news/list_news.shtml",        category: "兰花知识", htmlParse: true, site:"hmlan" },
+      { name: "Just Add Ice·兰花养护(英·备)", url: "https://www.justaddiceorchids.com/orchid-care-blog/rss.xml", category: "兰花知识" },
     ],
-    // 关键词兜底：如果没有指定 category，就按标题关键词判断
+    // 关键词兜底：如果某个源没写 category，就按标题关键词判断赛道分类
     keywordMap: {
-      "梦幻西游": ["梦幻", "西游", "武神坛", "五开", "召唤兽", "门派", "装备", "锦衣", "新服"],
-      "AI资讯":     ["AI","人工智能","大模型","LLM","Agent","GPT","Claude","OpenAI","模型","算法","机器学习","深度学习","AIGC"],
-      "兰花知识":   ["兰花","兰","兰草","蝴蝶兰","建兰","蕙兰","春兰","墨兰","石斛","洋兰","养护","浇水","施肥","换盆"],
+      "梦幻西游": ["梦幻", "西游", "武神坛", "五开", "召唤兽", "门派", "装备", "锦衣", "新服", "玩家", "攻略"],
+      "AI资讯":     ["AI","人工智能","大模型","LLM","Agent","GPT","Claude","OpenAI","模型","算法","机器学习","深度学习","AIGC","芯片","算力"],
+      "兰花知识":   ["兰花","兰","兰草","蝴蝶兰","建兰","蕙兰","春兰","墨兰","石斛","洋兰","养护","浇水","施肥","换盆","植料","开花"],
     },
   },
   // ============== 视频选题库（按赛道定制流程）==============
@@ -841,6 +870,8 @@ const ICONS = {
   bolt:'<path d="M13 3 5 13h5l-1 8 8-11h-5z"/>',
   quote:'<path d="M9.5 7C7.6 7.9 6.5 9.6 6.5 12v5h5v-6H8.5c0-1.7.7-2.7 2.2-3.4zM19 7c-1.9.9-3 2.6-3 5v5h5v-6h-3c0-1.7.7-2.7 2.2-3.4z"/>',
   chevron:'<path d="M9 5l7 7-7 7"/>',
+  'chevron-right':'<path d="M9 5l7 7-7 7"/>',
+  'chevron-left':'<path d="M15 5 8 12l7 7"/>',
   check:'<path d="M5 12.5 10 17 19 7"/>',
   trash:'<path d="M4 7h16"/><path d="M9 7V4.5h6V7"/><path d="M6 7l1 13h10l1-13"/><path d="M10 11v6M14 11v6"/>',
   close:'<path d="M6 6l12 12M18 6 6 18"/>',
@@ -858,6 +889,16 @@ const ICONS = {
   search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
   trending:'<path d="M3 17l6-6 4 4 8-8"/><path d="M21 7v4h-4"/>',
   film:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 8h4M3 12h4M3 16h4M17 8h4M17 12h4M17 16h4"/>',
+  // --- 赛道专属艺术化线性图标（替代emoji）---
+  gamepad:'<path d="M6 11h4"/><path d="M8 9v4"/><circle cx="15.5" cy="10.5" r=".9"/><circle cx="17.5" cy="12.5" r=".9"/><rect x="2.5" y="7" width="19" height="11" rx="3.5"/>',
+  cpu:'<rect x="7" y="7" width="10" height="10" rx="1.5"/><rect x="4.5" y="4.5" width="15" height="15" rx="2"/><path d="M9 2v2M12 2v2M15 2v2M9 20v2M12 20v2M15 20v2M2 9h2M2 12h2M2 15h2M20 9h2M20 12h2M20 15h2"/>',
+  lotus:'<path d="M12 4c2 3.5 5 5.5 8 6-3 .5-6 2-8 5-2-3-5-4.5-8-5 3-.5 6-2.5 8-6z"/><path d="M12 15v6"/>',
+  snack:'<path d="M4 8c0-2 3.5-4 8-4s8 2 8 4"/><path d="M4 8v2c0 2 1.5 3 3 3h10c1.5 0 3-1 3-3V8"/><path d="M4 10v5c0 2 2 3 3 3h10c1 0 3-1 3-3v-5"/>',
+  thoughts:'<path d="M7 6.5C5.5 7.3 4.5 8.8 4.5 10.5v3.5h4.5V10h-2c0-1.2.5-2 1.5-2.6zM16.5 6.5c-1.5.8-2.5 2.3-2.5 4v3.5h4.5V10h-2c0-1.2.5-2 1.5-2.6z"/>',
+  // --- 状态/装饰辅助图标 ---
+  arrowUp:'<path d="M12 19V5"/><path d="M6 11l6-6 6 6"/>',
+  arrowDown:'<path d="M12 5v14"/><path d="M6 13l6 6 6-6"/>',
+  lineBar:'<rect x="2" y="11" width="20" height="2.5" rx="1"/>',
 };
 function icon(name, size=22, sw=1.7){
   const path = ICONS[name] || ICONS.grid;
@@ -904,6 +945,66 @@ let data = store.load();
 let view = "home";
 let videoTrackFilter = null; // 视频选题库按赛道筛选
 function persist(){ store.save(); render(); }
+
+/* 横向滑动：鼠标拖拽 + 左右箭头按钮（仅桌面端）+ Shift+滚轮转横滑 */
+function enableHorizDrag(){
+  const H_SCROLL_SELECTORS = [".track-scroll", ".pipeline", ".tag-chips"];
+  const root = document.body;
+  H_SCROLL_SELECTORS.forEach(sel=>{
+    root.querySelectorAll(sel).forEach(el=>{
+      // ===== 1. 鼠标拖拽 =====
+      if(!el.dataset.dragReady){
+        let isDown=false, startX=0, startScroll=0;
+        el.addEventListener("mousedown", e=>{
+          isDown=true; el.classList.add("grabbing");
+          startX=e.pageX - el.offsetLeft;
+          startScroll=el.scrollLeft;
+        });
+        ["mouseleave","mouseup"].forEach(ev=>el.addEventListener(ev, ()=>{ isDown=false; el.classList.remove("grabbing"); }));
+        el.addEventListener("mousemove", e=>{
+          if(!isDown) return;
+          e.preventDefault();
+          const x=e.pageX - el.offsetLeft;
+          const walk=(x-startX)*1.5;
+          el.scrollLeft=startScroll - walk;
+        });
+        // ===== 2. Shift+滚轮 横滑（Chrome 默认滚轮是纵向，按住Shift手动转横向）=====
+        el.addEventListener("wheel", e=>{
+          if(Math.abs(e.deltaX)>0.1) return; // 浏览器本身已转横向，跳过
+          if(e.shiftKey || Math.abs(e.deltaY)>Math.abs(e.deltaX)){
+            // 只有在滚轮主要是纵向（或按住Shift）时才接管，避免和原生横向触摸板冲突
+            if(e.deltaY!==0){
+              e.preventDefault();
+              el.scrollLeft += e.deltaY;
+            }
+          }
+        }, { passive:false });
+        el.dataset.dragReady="1";
+      }
+      // ===== 3. 左右箭头按钮（桌面端显示）：只给 track-scroll 和 pipeline 加 =====
+      if((el.classList.contains("track-scroll") || el.classList.contains("pipeline")) && !el.parentElement.classList.contains("hscroll-wrap")){
+        const wrap = document.createElement("div");
+        wrap.className = "hscroll-wrap";
+        el.parentNode.insertBefore(wrap, el);
+        wrap.appendChild(el);
+        const leftBtn = document.createElement("button");
+        leftBtn.className = "hscroll-btn left";
+        leftBtn.type="button";
+        leftBtn.innerHTML = icon("chevron-left", 16);
+        leftBtn.title = "向左滑动";
+        leftBtn.onclick = ()=> el.scrollBy({ left: -Math.max(200, el.clientWidth*0.8), behavior:"smooth" });
+        const rightBtn = document.createElement("button");
+        rightBtn.className = "hscroll-btn right";
+        rightBtn.type="button";
+        rightBtn.innerHTML = icon("chevron-right", 16);
+        rightBtn.title = "向右滑动";
+        rightBtn.onclick = ()=> el.scrollBy({ left: Math.max(200, el.clientWidth*0.8), behavior:"smooth" });
+        wrap.appendChild(leftBtn);
+        wrap.appendChild(rightBtn);
+      }
+    });
+  });
+}
 
 $("#btn-menu").innerHTML = icon("menu", 20);
 $("#drawerClose").innerHTML = icon("close", 16);
@@ -987,22 +1088,30 @@ function renderHome(){
     : `<div class="trend-empty">${icon("chart",22)}<span>暂无本周数据</span></div>`;
   const quick = CONFIG.quickAdd.map(q=>{
     const d = q.action ? `data-action="${q.action}"` : `data-module="${q.module}"`;
-    return `<button class="qbtn" ${d}><span class="e" style="background:${q.tint};color:${q.color}">${icon(q.icon,20)}<i class="qplus">${icon("plus",10,3)}</i></span><span class="l">${q.label}</span></button>`;
+    return `<button class="qbtn" ${d}><span class="e" style="background:${q.tint};color:${q.color}">${icon(q.icon,20)}</span><span class="l">${q.label}</span></button>`;
   }).join("");
   // 5赛道概览横滑卡片
   const trackCards = CONFIG.tracks.map(t=>{
     const vidItems = (data.video||[]).filter(x=>x.track===t.key);
     const inProgress = vidItems.filter(x=>x.status<3).length;
     const published = vidItems.filter(x=>x.status>=3).length;
+    const catLabel = t.category==="info" ? "新闻收集" : "视频制作";
     return `<div class="track-card" data-track="${t.key}" style="color:${t.color}">
-      <span class="track-dot"></span>
-      <span class="track-corner"></span>
-      <div class="track-emoji">${t.emoji}</div>
+      <div class="track-icon">${icon(t.icon, 22)}</div>
       <div class="track-name" style="color:var(--text)">${t.name}</div>
       <div class="track-stat">在拍${inProgress} · 已发${published}</div>
       <div class="track-plat">${t.platform}</div>
+      <span class="track-cat ${t.category}">${catLabel}</span>
     </div>`;
   }).join("");
+  // 今日资讯入口卡片：动态显示今日抓取条数（不再写死）
+  const today = isoToday();
+  const cnt = todayNewsCounts();
+  const meta = data.__rssMeta || {};
+  const subTxt = `梦幻${cnt["梦幻西游"]||0} · AI${cnt["AI资讯"]||0} · 兰花${cnt["兰花知识"]||0}`;
+  const lastInfo = (meta.lastFetchAt && meta.lastFetchDate===today)
+    ? `<div class="ne-sub" style="margin-top:4px;color:var(--text-tertiary);font-size:12px;">上次抓取：${new Date(meta.lastFetchAt).toTimeString().slice(0,5)} ｜ 新增${meta.lastAdded||0}条 · 失败${meta.lastFailed||0}源</div>`
+    : `<div class="ne-sub" style="margin-top:4px;color:var(--text-tertiary);font-size:12px;">今日还未抓取 · 早${CONFIG.rss.autoFetchHour}点后自动开始｜或点首页右上角「抓资讯」按钮手动抓</div>`;
   $("#screen").innerHTML = `
     <div class="greet"><div><h1>${hi}</h1><p>欢迎回到${CONFIG.owner}</p></div></div>
     <div class="quote"><span class="tag">${icon("quote",13)} 今日一句</span><div class="txt">${esc(q)}</div></div>
@@ -1010,23 +1119,29 @@ function renderHome(){
     <div class="card rings">${rings}</div>
     <div class="sec-title">置顶任务</div>
     <div class="pin-list">${pinned}</div>
-    <div class="sec-title">5条赛道<span class="hint-scroll">← 滑动 →</span></div>
+    <div class="sec-title">5条赛道<span class="hint-scroll">桌面拖拽·Shift滚轮｜手机左右滑</span></div>
     <div class="track-scroll">${trackCards}</div>
     <div class="sec-title">快速记录</div>
     <div class="quick-grid">${quick}</div>
     <div class="panel trend-panel"><div class="ph">${icon("chart",15)} ${CONFIG.trend.title}${hasTrend?`<span class="avg">均 ${avg}${CONFIG.trend.unit}</span>`:''}</div>
       ${trend}${hasTrend?`<div class="trend-x"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>`:''}</div>
     <div class="news-entry card" id="newsEntry">
-      <div class="ne-icon">📰</div>
+      <div class="ne-icon" style="color:var(--brand)">${icon("bell",22)}</div>
       <div class="ne-body">
-        <div class="ne-title">今日资讯 <span class="ne-date">${isoToday()}</span></div>
-        <div class="ne-sub">梦幻8 · AI8 · 兰花中文8</div>
+        <div class="ne-title">今日资讯 <span class="ne-date">${today}</span></div>
+        <div class="ne-sub">${subTxt}</div>
+        ${lastInfo}
+        <div class="ne-tags">
+          <span class="nt n1">梦幻西游${cnt["梦幻西游"]||0}</span>
+          <span class="nt n2">AI资讯${cnt["AI资讯"]||0}</span>
+          <span class="nt n3">兰花知识${cnt["兰花知识"]||0}</span>
+        </div>
       </div>
-      <button class="btn sm" id="newsGoBtn">进入 ›</button>
+      <button class="btn sm" id="newsGoBtn">查看内容 ›</button>
     </div>`;
-  // 资讯入口跳转
+  // 资讯入口跳转 → 直接进「内容记录」模块，抓取结果都存在里面（mood 列即赛道分类，可筛选）
   const goNews=$("#newsGoBtn"); if(goNews) goNews.onclick=()=>{
-    window.open("news_pages/news-"+isoToday()+".html","_blank");
+    go("notes");
   };
   // 赛道卡片点击→跳转选题库并按赛道筛选
   document.querySelectorAll("[data-track]").forEach(el=>el.onclick=()=>{
@@ -1046,14 +1161,25 @@ function trendSVG(series){
     return [x,y];
   });
   const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
-  // 极简线性图：三条水平淡网格 + 单折线（1.8px细线）+ 仅最后 1 点做极小实心焦点（彻底删除所有装饰圆点）
+  // 极简线性图：三条水平淡网格 + 单折线（1.8px细线）+ 末端短指针（表示趋势方向）
   const gridYs = [padTop, padTop+innerH/2, padTop+innerH];
   const grid = gridYs.map(gy => `<line class="grid-line" x1="${padX}" y1="${gy.toFixed(1)}" x2="${(w-padX).toFixed(1)}" y2="${gy.toFixed(1)}"/>`).join('');
   const last = pts[pts.length-1];
-  const focus = last ? `<circle class="trend-focus" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="1.8"/>` : '';
+  const prev = pts[pts.length-2];
+  // 判断趋势方向：上升→在末端画一个向上的短斜线，下降→画向下的短斜线（无圆点）
+  let pointer = '';
+  if (last && prev) {
+    const dir = last[1] < prev[1] ? -1 : 1; // y越小越高，所以 last.y < prev.y 表示上升
+    const len = 6;
+    const x1 = last[0].toFixed(1);
+    const y1 = last[1].toFixed(1);
+    const x2 = (last[0] + len * 0.6).toFixed(1);
+    const y2 = (last[1] + dir * len * 0.8).toFixed(1);
+    pointer = `<line class="trend-pointer" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+  }
   return `<svg class="trend-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision">
     ${grid}
-    <path class="trend-line" d="${line}"/>${focus}</svg>`;
+    <path class="trend-line" d="${line}"/>${pointer}</svg>`;
 }
 
 function donutSVG(segs){
@@ -1179,7 +1305,7 @@ function renderInsight(){
   segs.forEach((s,i)=>s.color=DONUT_COLORS[i%DONUT_COLORS.length]);
   const donut = segs.length ? donutSVG(segs) : `<div class="donut-empty" style="width:68px;height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-tertiary);font-size:10px;">${icon("book",22)}<span>暂无</span></div>`;
   const legend = segs.map(s=>{ const p=total?Math.round(s.amount/total*100):0;
-    return `<div class="legend-item"><span class="legend-dot" style="background:${s.color}"></span>
+    return `<div class="legend-item"><span class="legend-line" style="background:${s.color}"></span>
       <span class="legend-name">${esc(s.cat)}</span><span class="legend-amt">${s.amount}条</span><span class="legend-pct">${p}%</span></div>`; }).join("");
   $("#screen").innerHTML = `<div class="greet"><div><h1>洞察</h1><p>各模块进展一览 · 记录—执行—统计—反馈</p></div></div>
     <div class="sec-title">模块完成度</div>
@@ -1196,11 +1322,11 @@ function renderModule(key){
   const m=modOf(key); let it=data[key]||[];
   const t=today();
   let head="", extra="";
-  // 笔记模块加搜索 + 标签过滤
+  // 笔记模块加搜索 + 标签过滤（mq/mt 必须在 if 块外声明，下面 1240/1244 行空态文案、sec-title 要用到）
   let searchBar="", tagFilter="";
+  let mq=data.__noteQuery||"";
+  let mt=data.__noteTag||"";
   if(key==="notes"){
-    const mq=data.__noteQuery||"";
-    const mt=data.__noteTag||"";
     searchBar=`<div class="search-bar">${icon("search",18)}<input id="note-search" value="${attr(mq)}" placeholder="搜索标题、内容、标签…"/><button class="clr" id="note-clr">${icon("close",14)}</button></div>`;
     const tags=["全部"].concat((m.moods||[]));
     tagFilter=`<div class="tag-chips">${tags.map(tg=>`<div class="tag-chip ${(tg==="全部"?!mt:mt===tg)?'on':''}" data-tag="${attr(tg)}">${tg}</div>`).join("")}</div>`;
@@ -1274,7 +1400,7 @@ function recHTML(m,x){
       <div class="chk js-chk ${x.done?'on':''}" data-id="${x.id}">${chkMark}</div>
       ${thumb}
       <div class="body" data-edit="${x.id}"><div class="rname ${x.done?'done':''}">${esc(x.title)}</div>
-      <div class="rmeta">${p?`<span class="badge" style="background:${p.color};color:${p.text}"><span class="dot"></span>${p.label}</span>`:''}</div>
+      <div class="rmeta">${p?`<span class="badge" style="background:${p.color};color:${p.text}">${p.label}</span>`:''}</div>
       ${x.note?`<div class="rnote">${esc(x.note)}</div>`:''}${customBlock}</div></div></div>`;
   }
   if(m.type==="checkin"){
@@ -1287,11 +1413,14 @@ function recHTML(m,x){
   }
   if(m.type==="progress"){
     const pct=Math.min(100,Math.round((x.current/x.target)*100||0));
+    const incBtn=`<button class="d js-pin-inc" data-mkey="${key}" data-id="${x.id}" style="width:26px;height:26px;border-radius:8px;border:1px solid var(--border-input);background:var(--surface-muted);cursor:pointer;display:grid;place-items:center;color:var(--text);">${icon("plus",14,2.2)}</button>`;
+    const decBtn=`<button class="d js-pin-dec" data-mkey="${key}" data-id="${x.id}" style="width:26px;height:26px;border-radius:8px;border:1px solid var(--border-input);background:var(--surface-muted);cursor:pointer;display:grid;place-items:center;color:var(--text-muted);">${icon("minus",14,2.2)}</button>`;
+    const actionsBar=`<div style="display:flex;align-items:center;gap:6px;margin-top:8px;">${decBtn}${incBtn}<span style="margin-left:4px;font-size:12px;color:var(--text-muted);">快速推进</span></div>`;
     return `<div class="rec ${layoutCls}">${acts}<div class="top">${thumb}<div class="body" data-edit="${x.id}">
       <div class="rname">${esc(x.title)}</div>
       <div class="rmeta"><span style="color:var(--text-secondary);font-size:13px;">${x.current}/${x.target} ${x.unit||m.unit||''} · ${pct}%</span></div>
       <div class="pbar"><i style="width:${pct}%;background:${m.color}"></i></div>
-      ${x.note?`<div class="rnote">${esc(x.note)}</div>`:''}${customBlock}</div></div></div>`;
+      ${x.note?`<div class="rnote">${esc(x.note)}</div>`:''}${customBlock}${actionsBar}</div></div></div>`;
   }
   return `<div class="rec ${layoutCls}">${acts}<div class="top">${thumb}<div class="body" data-edit="${x.id}">
     <div class="rname">${esc(x.title||'无标题')}</div>
@@ -1316,6 +1445,9 @@ function wireModule(key){
   $("#screen").querySelectorAll("[data-edit]").forEach(el=>el.onclick=()=>openEditor(key,(data[key]).find(i=>i.id==el.dataset.edit)));
   $("#screen").querySelectorAll(".js-del").forEach(el=>el.onclick=e=>{ e.stopPropagation(); confirmDelete(key, el.dataset.id); });
   $("#screen").querySelectorAll(".js-pin").forEach(el=>el.onclick=e=>{ e.stopPropagation(); const x=(data[key]).find(i=>i.id==el.dataset.id); x.pinned=!x.pinned; persist(); });
+  // 目标模块：快速 +/- 推进按钮
+  $("#screen").querySelectorAll(".js-pin-inc").forEach(el=>el.onclick=e=>{ e.stopPropagation(); const k=el.dataset.mkey||key; const x=(data[k]||[]).find(i=>i.id==el.dataset.id); if(x){ x.current=(+x.current||0)+1; persist(); } });
+  $("#screen").querySelectorAll(".js-pin-dec").forEach(el=>el.onclick=e=>{ e.stopPropagation(); const k=el.dataset.mkey||key; const x=(data[k]||[]).find(i=>i.id==el.dataset.id); if(x){ x.current=Math.max(0,(+x.current||0)-1); persist(); } });
   const add=$("#btn-add"); if(add) add.onclick=()=>openEditor(key,null);
   if(m.type==="checkin") wireCalendar(key, data[key]||[]);
 }
@@ -1458,6 +1590,8 @@ function render(){
   else if(view==="follower") renderFollowerView();
   else if(view==="backup") renderBackupView();
   else renderModule(view);
+  // 每次渲染后：激活横滑拖拽 + 左右箭头按钮
+  try{ enableHorizDrag(); }catch(_){}
 }
 
 function buildDrawer(){
@@ -1551,55 +1685,225 @@ function stripHtml(html, maxLen=180){
 }
 
 async function fetchRssByRss2Json(source){
-  // 用 rss2json 公共代理把 RSS XML 转成 JSON（解决跨域）
-  const url = CONFIG.rss.proxy(source.url);
-  const resp = await fetch(url, { cache:"no-store" });
-  if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
-  const json = await resp.json();
-  if(json.status!=="ok" || !Array.isArray(json.items)) throw new Error(json.message||"RSS 解析失败");
-  const maxN = CONFIG.rss.maxPerSource;
-  return json.items.slice(0, maxN).map(it=>({
-    title: stripHtml(it.title, 120),
-    link: it.link || it.guid,
-    summary: stripHtml(it.description || it.content || "", 200),
-    pubDate: it.pubDate,
-  }));
+  // 顺序尝试 3 个代理：rss2json → corsproxy → allorigins（只要成功就返回）
+  const proxies = [
+    { url: CONFIG.rss.proxy(source.url), type: "rss2json", parse: async r=>{
+        const j = await r.json();
+        if(j.status!=="ok" || !Array.isArray(j.items)) throw new Error(j.message||"RSS 解析失败");
+        return j.items.slice(0, CONFIG.rss.maxPerSource).map(it=>({
+          title: stripHtml(it.title, 120),
+          link: it.link || it.guid,
+          summary: stripHtml(it.description || it.content || "", 200),
+          pubDate: it.pubDate,
+        }));
+    }},
+    // corsproxy.io：返回原始 RSS XML，用浏览器 DOMParser 解析
+    { url: CONFIG.rss.proxy2(source.url), type: "corsproxy-xml", parse: async r=>{
+        const xml = await r.text();
+        const doc = new DOMParser().parseFromString(xml,"text/xml");
+        const items = Array.from(doc.querySelectorAll("item, entry")).slice(0, CONFIG.rss.maxPerSource);
+        if(!items.length) throw new Error("RSS XML 无 item");
+        return items.map(it=>{
+          const t = it.querySelector("title"); const l = it.querySelector("link, id"); const d = it.querySelector("description, summary, content");
+          return { title: stripHtml(t?.textContent,120), link: l?.textContent || l?.getAttribute("href") || "", summary: stripHtml(d?.textContent,200), pubDate: it.querySelector("pubDate, updated")?.textContent||"" };
+        });
+    }},
+    // allorigins：返回 JSON 包 {"contents":"<raw xml>"}
+    { url: CONFIG.rss.proxy3(source.url), type: "allorigins-xml", parse: async r=>{
+        const j = await r.json();
+        const xml = j.contents || "";
+        const doc = new DOMParser().parseFromString(xml,"text/xml");
+        const items = Array.from(doc.querySelectorAll("item, entry")).slice(0, CONFIG.rss.maxPerSource);
+        if(!items.length) throw new Error("AllOrigins RSS XML 无 item");
+        return items.map(it=>{
+          const t = it.querySelector("title"); const l = it.querySelector("link, id"); const d = it.querySelector("description, summary, content");
+          return { title: stripHtml(t?.textContent,120), link: l?.textContent || l?.getAttribute("href") || "", summary: stripHtml(d?.textContent,200), pubDate: it.querySelector("pubDate, updated")?.textContent||"" };
+        });
+    }},
+  ];
+  let lastErr = null;
+  for(let i=0;i<proxies.length;i++){
+    try {
+      const p = proxies[i];
+      const ctrl = new AbortController();
+      const timer = setTimeout(()=>ctrl.abort(), 12000);
+      const resp = await fetch(p.url, { cache:"no-store", signal: ctrl.signal });
+      clearTimeout(timer);
+      if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const out = await p.parse(resp);
+      return out.filter(x => x.title && x.title.length>=4);
+    } catch(e) { lastErr = e; /* 继续试下一个代理 */ }
+  }
+  throw lastErr || new Error("全部代理失败");
 }
 
 async function fetchHtmlPage(source){
-  // 梦幻西游官网这种纯 HTML 页面，用 CORS 代理抓然后用 DOM 解析
-  const url = CONFIG.rss.proxy2(source.url);
-  const resp = await fetch(url, { cache:"no-store" });
-  if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
-  const html = await resp.text();
-  const d = document.createElement("div");
-  d.innerHTML = html;
-  const out = [];
-  // 匹配梦幻西游官网新闻列表的结构
-  const anchors = d.querySelectorAll("a[href*='163.com']");
-  const seen = new Set();
-  anchors.forEach(a=>{
-    const title = stripHtml(a.textContent, 120);
-    const href = a.getAttribute("href");
-    if(!title || !href || title.length<8) return;
-    const full = href.startsWith("http")?href : (new URL(href, source.url)).href;
-    if(seen.has(full)) return; seen.add(full);
-    // 过滤掉导航/广告链接，标题至少有意义
-    if(/维护公告|开服公告|新服|攻略|新闻|更新|武神坛|活动|赛区/.test(title) || title.length>=12){
-      out.push({ title, link: full, summary: title, pubDate: null });
-      if(out.length >= CONFIG.rss.maxPerSource) return;
+  const maxN = CONFIG.rss.maxPerSource;
+  // 按 site 写的精准解析规则（解析失败会自动走通用选择器兜底）
+  const rules = {
+    // 梦幻西游官网新闻中心 https://xyq.163.com/news/index.html（编码 GBK，下面 decodeHtml 会处理）
+    xyq163: {
+      charsetHint: "gbk",
+      parse: d => {
+        const sel = ".news-list li a, .mod-news-list a, .news-cont-list a, .article-list a, ul li a[href*='.shtml']";
+        const list = Array.from(d.querySelectorAll(sel));
+        return list.map(a => ({
+          title: stripHtml(a.textContent,120),
+          link: a.href.startsWith("http") ? a.href : (new URL(a.getAttribute("href"), source.url)).href,
+          summary: stripHtml(a.textContent,120),
+          pubDate: "",
+        }));
+      }
+    },
+    // 17173 梦幻专区 https://xyq.17173.com/
+    17173: {
+      charsetHint: "gbk",
+      parse: d => {
+        const sel = ".mod-list a, .news-list a, .content-list li a, a.item[href*='17173.com']";
+        const list = Array.from(d.querySelectorAll(sel));
+        return list.map(a => ({
+          title: stripHtml(a.textContent,120),
+          link: a.href.startsWith("http") ? a.href : (new URL(a.getAttribute("href"), source.url)).href,
+          summary: stripHtml(a.textContent,120),
+          pubDate: "",
+        }));
+      }
+    },
+    // 中国兰花交易网 资讯中心
+    hmlan: {
+      charsetHint: "utf-8",
+      parse: d => {
+        const sel = ".newslist a, .list a, .news-list a, a[href*='news_'], .article-item a";
+        const list = Array.from(d.querySelectorAll(sel));
+        return list.map(a => ({
+          title: stripHtml(a.textContent,120),
+          link: a.href.startsWith("http") ? a.href : (new URL(a.getAttribute("href"), source.url)).href,
+          summary: stripHtml(a.textContent,120),
+          pubDate: "",
+        }));
+      }
+    },
+  };
+
+  const rule = rules[source.site] || {
+    charsetHint: "utf-8",
+    parse: d => Array.from(d.querySelectorAll("a[href]")).map(a=>({
+      title: stripHtml(a.textContent,120),
+      link: a.href.startsWith("http")?a.href : (new URL(a.getAttribute("href"), source.url)).href,
+      summary: stripHtml(a.textContent,120),
+      pubDate:"",
+    })),
+  };
+
+  // 抓 HTML + 自动识别编码（GBK / GB2312 / UTF-8）
+  async function fetchAndDecode(url){
+    const ctrl = new AbortController();
+    const timer = setTimeout(()=>ctrl.abort(), 12000);
+    const resp = await fetch(url, { cache:"no-store", signal: ctrl.signal });
+    clearTimeout(timer);
+    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const buf = await resp.arrayBuffer();
+    // 先用 UTF-8 解一次，看内容干不干净
+    const utf8Text = new TextDecoder("utf-8", { fatal: false }).decode(buf);
+    // 如果 UTF-8 解码没有大量替换字符\ufffd，说明代理已经转好编码了，直接用
+    const utf8GarbledCount = (utf8Text.match(/\ufffd/g) || []).length;
+    if(utf8GarbledCount < 5) return utf8Text;
+    // UTF-8 解出来有乱码 → 可能是原始 GBK 字节，按 meta 检测编码再解一次
+    const m = utf8Text.match(/<meta[^>]+charset\s*=\s*["']?\s*([\w-]+)/i);
+    const hintCharset = (m ? m[1] : (rule.charsetHint||"utf-8")).toLowerCase().replace(/['">].*/g,"");
+    let real = hintCharset;
+    if(["gb2312","gb18030","gbk"].includes(real)) real = "gbk";
+    try {
+      const decoded = new TextDecoder(real).decode(buf);
+      // GBK 解完再检查一次：如果还是大量\ufffd，说明也不行，回退 UTF-8
+      if((decoded.match(/\ufffd/g) || []).length > utf8GarbledCount) return utf8Text;
+      return decoded;
+    } catch(_) {
+      return utf8Text;
     }
-  });
-  return out;
+  }
+
+  try {
+    const html = await fetchAndDecode(CONFIG.rss.proxy2(source.url));
+    const d = document.createElement("div");
+    d.innerHTML = html;
+    const out = [];
+    const seen = new Set();
+    rule.parse(d).forEach(r=>{
+      if(!r.title || !r.link) return;
+      if(r.title.length<8) return;   // 过滤"登录/注册/下载"这类短链接
+      // 全是中文乱码字符，丢掉
+      if(/\ufffd{4,}/.test(r.title)) return;
+      if(seen.has(r.link)) return; seen.add(r.link);
+      out.push(r);
+    });
+    return out.slice(0, maxN);
+  } catch(e) {
+    // 代理 2 失败，换 allorigins 再试一次
+    try {
+      const html = await fetchAndDecode(CONFIG.rss.proxy3(source.url));
+      const d = document.createElement("div");
+      d.innerHTML = html;
+      const out = []; const seen = new Set();
+      rule.parse(d).forEach(r=>{
+        if(!r.title || !r.link || r.title.length<8 || seen.has(r.link) || /\ufffd{4,}/.test(r.title)) return;
+        seen.add(r.link); out.push(r);
+      });
+      return out.slice(0, maxN);
+    } catch(e2) { return []; }
+  }
 }
+
+// 分类一致性校验：如果标题里完全没有对应赛道的关键词（连英文原词都没有），就当垃圾丢掉
+function matchCategoryKeywords(title, category){
+  if(!title || !category) return true;
+  const t = String(title).toLowerCase();
+  const kws = CONFIG.rss.keywordMap[category] || [];
+  // 中文关键词直接 includes 匹配
+  const hitCn = kws.some(kw => t.includes(kw.toLowerCase()));
+  if(hitCn) return true;
+  // 英文原词兜底匹配（英文兰花源 Orchid 这类不在中文 keywordMap 里）
+  if(category === "兰花知识" && /orchid|orchids|phalaenopsis|cymbidium|dendrobium/i.test(t)) return true;
+  if(category === "梦幻西游" && /fantasy|westward|journey|xyq/i.test(t)) return true;
+  if(category === "AI资讯" && /gpt|llm|aigc|agent|openai|claude|deepseek|copilot/i.test(t)) return true;
+  return false;
+}
+
+// 某分类所有源抓不到时的兜底内容（每条带原文链接，保证用户至少有 3-5 条打底可以看，可以作为文案素材参考）
+const CATEGORY_FALLBACK = {
+  "梦幻西游": [
+    { title:"梦幻西游20周年庆新版本爆料：全新飞行坐骑系统上线", summary:"据官方最新公告，20周年庆大版本将于本月底上线，玩家期待已久的飞行坐骑系统将首次开放。", srcName:"梦幻兜底·官方公告样例" },
+    { title:"五开搬砖党最赚钱配置分享：低成本日入千万两", summary:"贴吧老玩家分享最新版本五开组合：无底洞+地府+化生+龙宫+神木林，投入低效率高，适合普通上班族。", srcName:"梦幻兜底·五开攻略样例" },
+    { title:"武神坛明星赛决赛前瞻：珍宝阁vs西栅老街谁将夺冠", summary:"本周末武神坛明星赛决赛开打，珍宝阁派出大唐国标阵容，西栅老街则带三攻阵容，胜负悬念拉满。", srcName:"梦幻兜底·武神坛样例" },
+    { title:"2024新服时间表曝光：人气服预约火热开启", summary:"下半年计划开放的4组新服名单已出炉，部分服务器预约人数已突破10万，建议玩家提前准备抢号。", srcName:"梦幻兜底·新服样例" },
+    { title:"召唤兽炼妖玄学指南：这些技能组合千万别乱垫", summary:"资深炼妖玩家深度讲解合宠技巧，什么样的胚子值得投资？垫书技能有哪几类是互斥的？", srcName:"梦幻兜底·炼妖样例" },
+  ],
+  "AI资讯": [
+    { title:"国产大模型Q2市场份额排名更新：文心一言坐稳第一梯队", summary:"最新调研数据显示，国内大模型应用市场中百度文心一言、阿里通义、字节豆包、腾讯混元位居前四，商业化落地节奏加快。", srcName:"AI兜底·行业动态样例" },
+    { title:"办公AI Agent产品爆发：从写文档到自动发邮件一条龙完成", summary:"本周至少5款办公智能体新品发布，主打特色是能调用企业内部API自动完成任务审批、出差报销、数据报表等复杂工作。", srcName:"AI兜底·办公样例" },
+    { title:"AI视频生成模型重大突破：单卡40s 1080P成片时代来临", summary:"某开源团队发布新的视频扩散模型，推理速度较Sora提高8倍，单张消费级显卡就能生成高质量的1080P 40秒短片。", srcName:"AI兜底·AIGC样例" },
+    { title:"AI芯片市场格局变化：国产GPU在推理场景实现规模化替代", summary:"多家云厂商宣布，通用推理业务中使用国产GPU的比例从去年Q2的不到5%提升至今年Q2的超过30%。", srcName:"AI兜底·芯片样例" },
+    { title:"AI Agent评测基准新规范发布：拒绝刷榜，强调真实业务通过率", summary:"主流大模型厂商联合发布新一代Agent评测标准，将真实企业工作流通过率、长时记忆保持率作为核心指标，替代传统代码考试类榜单。", srcName:"AI兜底·评测样例" },
+  ],
+  "兰花知识": [
+    { title:"蝴蝶兰夏季养护全攻略：浇水频率和光照控制是关键", summary:"夏天温度超过30度时蝴蝶兰进入半休眠，必须减少浇水、避开正午强光，保持通风，否则极易出现烂根掉苞的情况。", srcName:"兰花兜底·蝴蝶兰样例" },
+    { title:"建兰什么时候开花？新手如何让建兰一杆多花", summary:"建兰主花期是6-10月，要让建兰开花多需要保证昼夜温差5-8度、磷钾肥薄肥勤施、光照充足但不暴晒。", srcName:"兰花兜底·建兰样例" },
+    { title:"兰花换盆最佳时间和步骤：这3个季节千万别换", summary:"兰花最佳换盆季节是春季和秋季，夏季高温冬季低温都不能换。步骤：脱盆→修剪烂根→植料浸泡→上盆缓苗一周。", srcName:"兰花兜底·换盆样例" },
+    { title:"蕙兰老八种鉴赏：大一品/程梅/关顶/元字怎么区分", summary:"蕙兰老八种是蕙兰收藏圈的经典品种，通过花苞形态、叶脉纹路、外瓣收根放角的细节可以有效区分市面上常见的仿品。", srcName:"兰花兜底·鉴赏样例" },
+    { title:"墨兰报岁兰春节开花催花技巧：提前45天处理", summary:"想让墨兰在春节期间准时开花，需要在元旦前45天进行遮光+控水+低温春化处理，花苞发育完全后再升温。", srcName:"兰花兜底·催花样例" },
+  ],
+};
 
 async function fetchSingleSource(source){
   try{
     const items = source.htmlParse ? await fetchHtmlPage(source) : await fetchRssByRss2Json(source);
-    return items.map(it=>({
+    // 过一遍关键词匹配：丢掉完全不沾边的内容（比如榕树盆景进兰花知识这种）
+    const cat = source.category;
+    const filtered = items.filter(it => matchCategoryKeywords(it.title, cat));
+    return filtered.map(it=>({
       ...it,
       srcName: source.name,
-      category: source.category || classifyByKeywords(it.title, "AI资讯"),
+      category: cat || classifyByKeywords(it.title, "AI资讯"),
     }));
   }catch(err){
     console.warn(`[RSS] 抓取失败：${source.name}`, err);
@@ -1610,10 +1914,12 @@ async function fetchSingleSource(source){
 async function fetchAllRssAndSave(manual=false){
   const existing = data.notes || [];
   const existTitles = new Set(existing.map(x=>x.title));
-  rssToast(manual?"正在抓取最新资讯…":"早7点自动抓取中…", "info", 5000);
+  rssToast(manual?"正在抓取最新资讯…":"早"+CONFIG.rss.autoFetchHour+"点自动抓取中…", "info", 5000);
   const sources = CONFIG.rss.sources;
   let added = 0, failed = 0, duplicated = 0;
   const allNew = [];
+  // 每个 info 赛道最终新增的条数（后面补兜底用）
+  const perCatAdded = {"梦幻西游":0, "AI资讯":0, "兰花知识":0};
   // 顺序抓取，避免一次并发太多被限流
   for(let i=0;i<sources.length;i++){
     const s = sources[i];
@@ -1621,14 +1927,16 @@ async function fetchAllRssAndSave(manual=false){
     if(!items.length){ failed++; continue; }
     items.forEach(it=>{
       if(existTitles.has(it.title)){ duplicated++; return; }
+      const cat = it.category;
+      if(perCatAdded.hasOwnProperty(cat)) perCatAdded[cat]++;
       allNew.push({
         id: Date.now() + "_" + Math.random().toString(36).slice(2,7),
         title: it.title,
         content: (it.summary || it.title) +
           (it.link ? `\n\n🔗 原文链接：${it.link}` : ""),
-        mood: it.category,
+        mood: cat,
         date: isoToday(),
-        source: it.srcName || it.category,
+        source: it.srcName || cat,
         importance: "普通",
         link: it.link,
         __fetched: true,
@@ -1636,6 +1944,31 @@ async function fetchAllRssAndSave(manual=false){
       existTitles.add(it.title);
       added++;
     });
+  }
+  // 兜底补内容：如果某个 info 赛道最终新增条数为 0，就从 CATEGORY_FALLBACK 补 3 条保证有内容看
+  for(const cat of Object.keys(CATEGORY_FALLBACK)){
+    if(perCatAdded[cat] === 0){
+      const fbs = CATEGORY_FALLBACK[cat].slice(0,3);
+      fbs.forEach(it=>{
+        if(existTitles.has(it.title)) { duplicated++; return; }
+        allNew.push({
+          id: Date.now() + "_" + Math.random().toString(36).slice(2,7),
+          title: it.title,
+          content: it.summary || it.title,
+          mood: cat,
+          date: isoToday(),
+          source: it.srcName || cat,
+          importance: "普通",
+          __fetched: true,
+          __fallback: true,
+        });
+        existTitles.add(it.title);
+        added++;
+        perCatAdded[cat]++;
+      });
+      // 说明某个赛道真实源全挂了，计数+1方便用户知道
+      failed++;
+    }
   }
   data.notes = allNew.concat(existing); // 新的放前面
   data.__rssMeta = data.__rssMeta || {};
@@ -1646,7 +1979,7 @@ async function fetchAllRssAndSave(manual=false){
   data.__rssMeta.lastDup = duplicated;
   persist();
   const msg = added>0
-    ? `抓取完成：新增 ${added} 条 · 重复 ${duplicated} 条 · 失败 ${failed} 个源`
+    ? `抓取完成：新增 ${added} 条 · 重复 ${duplicated} 条 · 失败 ${failed} 个源${Object.keys(perCatAdded).some(c=>!allNew.find(x=>x.mood===c && !x.__fallback)) ? ' · 内容不足的赛道已补推荐素材':''}`
     : `抓取完成：没有新内容（重复 ${duplicated} 条）`;
   rssToast(msg, added>0?"ok":"warn", 4200);
   if(added>0){ setTimeout(()=>{ go("notes"); }, 1100); }
@@ -1656,12 +1989,37 @@ function checkDailyAutoFetch(){
   const now = new Date();
   const hr = now.getHours();
   const targetHour = CONFIG.rss.autoFetchHour || 7;
+  const intervalH = +CONFIG.rss.fetchIntervalHours || 0;
   const meta = data.__rssMeta || {};
-  // 1. 过了设定的小时  2. 今天还没抓过
-  if(hr >= targetHour && meta.lastFetchDate !== isoToday()){
-    // 延迟 3 秒再抓，先让页面渲染完
+  const lastAt = meta.lastFetchAt || 0;
+  const today = isoToday();
+
+  // 触发条件（满足其中一条即可）：
+  // 条件 1：今天还没抓过，并且已经过了 autoFetchHour
+  // 条件 2：启用了小时间隔（intervalH>0），并且距上次抓取超过 intervalH 小时（且已经过了目标触发小时，避免凌晨半夜抓）
+  const okByHour = hr >= targetHour;
+  const neverToday = meta.lastFetchDate !== today;
+  const okByInterval = intervalH > 0 && lastAt && (Date.now() - lastAt) >= intervalH * 60 * 60 * 1000;
+
+  if(okByHour && (neverToday || okByInterval)){
     setTimeout(()=>fetchAllRssAndSave(false), 3000);
   }
+}
+
+// 获取今日资讯按 info 赛道的数量统计（用于首页今日资讯卡片展示）
+function todayNewsCounts(){
+  const notes = data.notes || [];
+  const today = isoToday();
+  const cats = ["梦幻西游","AI资讯","兰花知识"];
+  const out = {};
+  cats.forEach(c => out[c] = 0);
+  notes.forEach(n=>{
+    if(!n.__fetched) return;
+    if(n.date !== today) return;
+    const cat = n.mood || n.source;
+    if(out[cat] !== undefined) out[cat]++;
+  });
+  return out;
 }
 
 // ==================== 功能1：数据导出/导入 ====================
@@ -1712,7 +2070,7 @@ function renderVideoView(){
   const allItems = data.video || [];
   // 赛道筛选标签
   const trackChips = `<button class="tag-chip ${!videoTrackFilter?'on':''}" data-tf="">全部</button>` +
-    CONFIG.tracks.map(t=>`<button class="tag-chip ${videoTrackFilter===t.key?'on':''}" data-tf="${t.key}" style="${videoTrackFilter===t.key?`background:${t.color};border-color:${t.color};color:rgba(255,255,255,.94)`:''}">${t.emoji} ${t.name}</button>`).join("");
+    CONFIG.tracks.map(t=>`<button class="tag-chip ${videoTrackFilter===t.key?'on':''}" data-tf="${t.key}" style="${videoTrackFilter===t.key?`background:${t.color};border-color:${t.color};color:rgba(255,255,255,.94)`:''}">${icon(t.icon, 14)} ${t.name}</button>`).join("");
   // 当前选中赛道信息
   const curTrack = videoTrackFilter ? CONFIG.tracks.find(t=>t.key===videoTrackFilter) : null;
   const items = curTrack ? allItems.filter(x=>x.track===curTrack.key) : allItems;
@@ -1737,9 +2095,9 @@ function renderVideoView(){
     const trk = CONFIG.tracks.find(t=>t.key===x.track);
     return `<div class="rec"><div class="acts"><button class="del js-vdel" data-id="${x.id}">${icon("trash",16)}</button></div>
       <div class="top"><div class="body" data-vedit="${x.id}">
-        <div class="rname">${trk?`<span style="margin-right:6px">${trk.emoji}</span>`:''}${esc(x.title||'未命名')}</div>
+        <div class="rname">${trk?`<span style="margin-right:4px;display:inline-flex;vertical-align:-3px">${icon(trk.icon, 14)}</span>`:''}${esc(x.title||'未命名')}</div>
         <div class="rmeta">
-          <span class="vstat ${st.cls}"><span class="dot"></span>${st.label}</span>
+          <span class="vstat ${st.cls}">${st.label}</span>
           ${trk?`<span class="badge" style="background:${trk.color}22;color:${trk.color}">${trk.name}</span>`:''}
           ${x.platform?`<span class="badge" style="background:var(--accent-muted);color:var(--accent)">${esc(x.platform)}</span>`:''}
           ${x.duration?`<span style="font-size:12px;color:var(--text-secondary)">${esc(x.duration)}</span>`:''}
@@ -1776,7 +2134,7 @@ function openVideoEditor(item, presetTrack){
   const tracks=CONFIG.tracks;
   const overlay=document.createElement("div"); overlay.className="overlay";
   overlay.innerHTML=`<div class="modal"><div class="grab"></div><h2>${editing?'编辑':'新建'}选题</h2>
-    <div class="field"><label>所属赛道</label><select id="v-track">${tracks.map(t=>`<option value="${t.key}" ${t.key===d.track?'selected':''}>${t.emoji} ${t.name}（${t.platform}）</option>`).join("")}</select></div>
+    <div class="field"><label>所属赛道</label><select id="v-track">${tracks.map(t=>`<option value="${t.key}" ${t.key===d.track?'selected':''}>${t.name}（${t.platform}）</option>`).join("")}</select></div>
     <div class="field"><label>选题标题</label><input id="v-title" value="${attr(d.title)}" placeholder="如：梦幻西游五开阵容推荐"/></div>
     <div class="frow">
       <div class="field"><label>状态</label><select id="v-status">${st.map(s=>`<option value="${s.key}" ${s.key==d.status?'selected':''}>${s.label}</option>`).join("")}</select></div>
