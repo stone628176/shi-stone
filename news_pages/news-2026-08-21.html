@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1d26">
+<title>每日资讯 · 2026-08-21</title>
+<style>
+:root { --bg:#1a1d26; --card:#232733; --text:#e8eaef; --sub:#a7acba; --line:#2f3443; --accent:#c9a96a; }
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; }
+body { margin:0; font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); line-height:1.5; padding-top:128px; }
+
+/* ========== 顶部栏 ========== */
+.header {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:linear-gradient(180deg,#232733 0%, #1a1d26 100%);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.navrow { display:flex; align-items:center; justify-content:space-between; padding:10px 12px 0; gap:8px; }
+.back {
+  flex:0 0 auto; display:inline-flex; align-items:center; gap:4px;
+  padding:7px 12px; font-size:13px; font-weight:700; color:var(--text);
+  background:var(--card); border:1px solid var(--line); border-radius:10px;
+  text-decoration:none; transition:all .15s;
+}
+.back:active { transform:scale(.96); background:#2a2f3d; }
+.crumbs { flex:1; min-width:0; font-size:12px; color:var(--sub); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:right; }
+.crumbs a { color:var(--accent); text-decoration:none; margin:0 2px; }
+.titlerow { padding:8px 16px 0; }
+.titlerow h1 { margin:0; font-size:18px; font-weight:800; }
+.subline { margin-top:2px; color:var(--sub); font-size:12px; }
+
+/* ========== 分类Tab ========== */
+.tabs {
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  gap:0; margin:12px 14px 10px;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:12px; overflow:hidden;
+}
+.tab {
+  padding:11px 4px; font-size:14px; font-weight:800;
+  color:var(--sub); background:transparent; border:0; cursor:pointer;
+  text-align:center; transition:all .2s;
+}
+.tab .tnum { display:inline-block; font-size:11px; margin-left:3px; padding:2px 6px; background:rgba(255,255,255,.06); border-radius:999px; }
+.tab.on { background:var(--accent); color:#1a1d26; }
+.tab.on .tnum { background:rgba(26,29,38,.25); color:#1a1d26; }
+
+/* ========== 内容区 ========== */
+.container { padding:10px 14px 100px; max-width:720px; margin:0 auto; }
+.sec { }
+.sec-title { display:flex; align-items:center; font-size:17px; font-weight:800; padding:2px 0 10px 10px; }
+.sec-title .cnt { font-size:12px; color:var(--sub); font-weight:600; margin-left:8px; align-self:flex-end; }
+.list { display:flex; flex-direction:column; gap:10px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 14px 14px 12px; display:flex; gap:12px; }
+.card .idx { flex:0 0 auto; width:28px; height:28px; border-radius:8px; background:rgba(201,169,106,.15); color:var(--accent); font-weight:800; font-size:13px; display:grid; place-items:center; flex-shrink:0; }
+.card .cbody { flex:1; min-width:0; }
+.card .title { color:var(--text); font-size:15px; font-weight:700; text-decoration:none; line-height:1.45; display:block; margin-bottom:6px; word-break:break-word; }
+.card .title:hover { color:var(--accent); }
+.card .sum { color:var(--sub); font-size:13px; line-height:1.55; margin-bottom:8px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.card .meta { font-size:12px; color:var(--sub); }
+.card .meta .src { font-weight:700; }
+.empty { padding:24px 12px; text-align:center; color:var(--sub); font-size:14px; background:var(--card); border-radius:14px; border:1px dashed var(--line); }
+.footer { text-align:center; color:var(--sub); font-size:12px; margin-top:28px; padding-bottom:10px; }
+.banner { margin:14px; padding:10px 14px; background:rgba(90,143,123,.15); border:1px solid rgba(90,143,123,.4); border-radius:12px; font-size:13px; color:#8abaa5; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="navrow">
+    <a href="index.html" class="back" onclick="if(history.length>1 && document.referrer.indexOf('github.io')>=0){history.back();return false;}">← 资讯列表</a>
+    <a href="../workbench-mobile.html" class="back">🎯 工作台</a>
+    <div class="crumbs"><a href="../workbench-mobile.html">工作台</a>›<a href="index.html">资讯</a>›当日</div>
+  </div>
+  <div class="titlerow">
+    <h1>📰 每日资讯 2026年08月21日 星期五</h1>
+    <div class="subline">共 24 条 · 自动抓取于 11:31</div>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-i="0">🎮 梦幻<span class="tnum">8</span></button>
+    <button class="tab"    data-i="1">🤖 AI<span class="tnum">8</span></button>
+    <button class="tab"    data-i="2">🌺 兰花<span class="tnum">8</span></button>
+  </div>
+</div>
+
+<div class="container" id="cont">
+  
+        <section class="sec" id="sec-0" data-cat="梦幻西游" style="display:block;">
+          <div class="sec-title" style="border-left:5px solid #c9a96a;"><span style="font-size:22px;margin-right:6px;">🎮</span>梦幻西游 <span class="cnt">8条</span></div>
+          <div class="list">
+                <div class="card">
+                  <div class="idx">01</div>
+                  <div class="cbody">
+                    <a class="title" href="https://ecard.163.com/news/intro/dy/2015/10/12/20637_573394.html" target="_blank" rel="noopener">快速充值 消费查询</a>
+                    <div class="sum">快速充值 消费查询</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">02</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.gm.163.com/user_help.html?kind_id=16?from_xyqcom" target="_blank" rel="noopener">密码找回 解除密保</a>
+                    <div class="sum">密码找回 解除密保</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">03</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.163.com/news/20260818/4905_1311457.html" target="_blank" rel="noopener">[时间服]呼朋引伴玩梦幻，周边成就等你来拿！ 08/18</a>
+                    <div class="sum">[时间服]呼朋引伴玩梦幻，周边成就等你来拿！ 08/18</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">04</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.163.com/news/20260810/4905_1310592.html" target="_blank" rel="noopener">梦幻西游再续前缘火热预约 明星玩家&福利重磅来袭 08/10</a>
+                    <div class="sum">梦幻西游再续前缘火热预约 明星玩家&福利重磅来袭 08/10</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">05</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.163.com/news/20260817/4905_1311403.html" target="_blank" rel="noopener">新玩家预约H5必得9元！全民最高抽540元！ 08/17</a>
+                    <div class="sum">新玩家预约H5必得9元！全民最高抽540元！ 08/17</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">06</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.163.com/news/20260820/4905_1311781.html" target="_blank" rel="noopener">21号晚 彭昱畅×旭旭宝宝×老王 「彭」友之约 08/20</a>
+                    <div class="sum">21号晚 彭昱畅×旭旭宝宝×老王 「彭」友之约 08/20</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">07</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.163.com/news/20260820/4905_1311777.html" target="_blank" rel="noopener">最后24小时！预约即将截止，开服即领五重好礼！ 08/20</a>
+                    <div class="sum">最后24小时！预约即将截止，开服即领五重好礼！ 08/20</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">08</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.163.com/wh/20260807/4907_1310498.html" target="_blank" rel="noopener">2026年8月11日定期维护公告 08/10</a>
+                    <div class="sum">2026年8月11日定期维护公告 08/10</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div></div>
+        </section>
+        <section class="sec" id="sec-1" data-cat="AI资讯" style="display:none;">
+          <div class="sec-title" style="border-left:5px solid #5f7aa8;"><span style="font-size:22px;margin-right:6px;">🤖</span>AI资讯 <span class="cnt">8条</span></div>
+          <div class="list">
+                <div class="card">
+                  <div class="idx">01</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/08/476280.html" target="_blank" rel="noopener">这届“WRC必看”：全栈AI、20+超难家务，8.99万带回家</a>
+                    <div class="sum">这届“WRC必看”：全栈AI、20+超难家务，8.99万带回家</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">02</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/08/476281.html" target="_blank" rel="noopener">光帆AI技术正式落地韶音OpenFit 2 AI耳机，携手突破AI边界</a>
+                    <div class="sum">韶音宣布与光帆科技达成AI技术合作，将上线基于光帆自研AI OS的效率功能合集——"AI 实验室"</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">03</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/08/476199.html" target="_blank" rel="noopener">闭源RSI的严父：18个Agent自主科研，Kimi K3靠Harness逼近Opus 5</a>
+                    <div class="sum">经典RSI剧本开始动摇</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">04</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/08/476141.html" target="_blank" rel="noopener">今年WRC最大展台，预告具身智能未来</a>
+                    <div class="sum">从自主泛化到真生产力</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">05</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/08/476129.html" target="_blank" rel="noopener">攻克行业级柔性操作难题！招商局狮子山人工智能实验室首次亮相WRC 2026</a>
+                    <div class="sum">全栈自研，真机叠衣ICRA夺冠</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">06</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/08/476120.html" target="_blank" rel="noopener">宇树科技上市首日大涨629%，世界机器人大会里谁是“下一个宇树”？</a>
+                    <div class="sum">这几个玩家或可被“押注”</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">07</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/08/476078.html" target="_blank" rel="noopener">墨奇亮相WRC：一台机器人长程任务实战背后的“具身大脑”革命</a>
+                    <div class="sum">墨奇智能（MORPHI）首次在国内系统亮相，公开展示其新近发布的具身智能模型架构MoRA</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">08</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/08/476075.html" target="_blank" rel="noopener">完美世界2026半年报：《异环》全球流水破20亿 Q3起释放业绩</a>
+                    <div class="sum">完美世界今年4月底推出的重磅新游《异环》截至8月18日已取得全球累计流水超20亿元，业绩贡献将在Q3起逐步释放</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div></div>
+        </section>
+        <section class="sec" id="sec-2" data-cat="兰花知识" style="display:none;">
+          <div class="sec-title" style="border-left:5px solid #5a8f7b;"><span style="font-size:22px;margin-right:6px;">🌺</span>兰花知识 <span class="cnt">8条</span></div>
+          <div class="list">
+                <div class="card">
+                  <div class="idx">01</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E6%9C%89%E6%9C%BA%E8%82%A5%E5%A5%BD%E8%BF%98%E6%98%AF%E5%8C%96%E8%82%A5%E5%A5%BD%EF%BC%9F" target="_blank" rel="noopener">有机肥好还是化肥好？</a>
+                    <div class="sum">新手推荐化肥（花多多系列），浓度好控制不烧根；老手可以用发酵羊粪、花生壳、油枯做底肥，效果更好但要注意完全腐熟。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">02</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E5%85%B0%E8%8A%B1%E6%B6%88%E8%8B%9E%E6%98%AF%E4%BB%80%E4%B9%88%E5%8E%9F%E5%9B%A0%EF%BC%9F%E6%80%8E%E4%B9%88%E9%A2%84%E9%98%B2%EF%BC%9F" target="_blank" rel="noopener">兰花消苞是什么原因？怎么预防？</a>
+                    <div class="sum">消苞最常见3原因：①温度骤变10℃以上；②花苞期施浓肥或浇水溅到花苞里；③空气太干（湿度<40%）。预防：花苞期保持稳定环境，不施肥不折腾，湿度维持50-70%。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">03</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E5%85%B0%E8%8A%B1%E6%9C%80%E5%B8%B8%E8%A7%81%E7%9A%843%E7%A7%8D%E8%99%AB%E5%AE%B3%E5%8F%8A%E9%98%B2%E6%B2%BB" target="_blank" rel="noopener">兰花最常见的3种虫害及防治</a>
+                    <div class="sum">①介壳虫（叶背小白点）：酒精擦或喷护花神；②红蜘蛛（叶面白点叶背结网）：喷阿维菌素；③蜗牛/蛞蝓（夜里啃新芽）：撒四聚乙醛颗粒或啤酒诱杀。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">04</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E5%85%B0%E8%8A%B1%E5%88%B0%E5%BA%95%E8%A6%81%E6%99%92%E5%A4%AA%E9%98%B3%E5%90%97%EF%BC%9F3%E5%8F%A5%E8%AF%9D%E8%AE%B2%E6%B8%85%E6%A5%9A" target="_blank" rel="noopener">兰花到底要晒太阳吗？3句话讲清楚</a>
+                    <div class="sum">春冬可以直射晨光（上午10点前）；夏秋必须遮光50-70%（遮阳网或散光处）；叶片翠绿不发暗=光照正好，叶片焦黄=晒多了。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">05</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E5%85%B0%E8%8A%B1%E4%B8%8A%E7%9B%86%E6%97%B6%E7%9A%84%E4%B8%A4%E4%B8%AA%E8%87%B4%E5%91%BD%E9%94%99%E8%AF%AF" target="_blank" rel="noopener">兰花上盆时的两个致命错误</a>
+                    <div class="sum">①植料压太紧：根需要呼吸空间，轻轻墩实即可，手压压实直接闷根；②种太深：假鳞茎一定要露出一半，埋深了不发芽还烂茎。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">06</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E5%85%B0%E8%8A%B1%E4%B8%80%E5%B9%B4%E8%83%BD%E5%8F%91%E5%87%A0%E8%8B%97%EF%BC%9F%E6%AD%A3%E5%B8%B8%E6%98%AF%E5%A4%9A%E5%B0%91%EF%BC%9F" target="_blank" rel="noopener">兰花一年能发几苗？正常是多少？</a>
+                    <div class="sum">健康的成株兰花，春秋两季各发1-2个新芽是正常水平（苗数×1.5~2倍/年）。一年到头不发芽的说明根系不好，倒盆检查植料和根。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">07</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E5%86%AC%E5%A4%A9%E5%85%B0%E8%8A%B1%E6%B5%87%E6%B0%B4%E8%A6%81%E7%89%B9%E5%88%AB%E6%B3%A8%E6%84%8F%E7%9A%843%E4%BB%B6%E4%BA%8B" target="_blank" rel="noopener">冬天兰花浇水要特别注意的3件事</a>
+                    <div class="sum">①水温与室温接近，别用冷水刺激根部；②选晴天中午浇，留出下午时间晾盆土；③整体减少浇水量，保持植料微润偏干即可。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">08</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E5%AE%B6%E9%87%8C%E4%BB%80%E4%B9%88%E4%BD%8D%E7%BD%AE%E6%9C%80%E9%80%82%E5%90%88%E6%94%BE%E5%85%B0%E8%8A%B1%EF%BC%9F" target="_blank" rel="noopener">家里什么位置最适合放兰花？</a>
+                    <div class="sum">最好的位置：朝南或朝东窗台外一米处（花架）；其次：客厅明亮散光的角落；最差：空调直吹处、厨房油烟处、卫生间湿气重且无光处。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div></div>
+        </section>
+  <div class="footer">本页面每天 08:00 自动生成 · 数据来自公开RSS/官网新闻</div>
+</div>
+
+<script>
+(function(){
+  var tabs = document.querySelectorAll('#tabs .tab');
+  var secs = document.querySelectorAll('.sec');
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){
+      var i = +this.getAttribute('data-i');
+      tabs.forEach(function(x){x.classList.remove('on');});
+      this.classList.add('on');
+      secs.forEach(function(s, j){
+        s.style.display = (j===i)?'block':'none';
+      });
+      window.scrollTo({top:0,behavior:'instant'});
+    });
+  });
+  // 防止浏览器后退按钮卡到微信
+  window.addEventListener('popstate', function(){});
+})();
+</script>
+</body>
+</html>
