@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1d26">
+<title>每日资讯 · 2026-09-27</title>
+<style>
+:root { --bg:#1a1d26; --card:#232733; --text:#e8eaef; --sub:#a7acba; --line:#2f3443; --accent:#c9a96a; }
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; }
+body { margin:0; font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); line-height:1.5; padding-top:128px; }
+
+/* ========== 顶部栏 ========== */
+.header {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  background:linear-gradient(180deg,#232733 0%, #1a1d26 100%);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.navrow { display:flex; align-items:center; justify-content:space-between; padding:10px 12px 0; gap:8px; }
+.back {
+  flex:0 0 auto; display:inline-flex; align-items:center; gap:4px;
+  padding:7px 12px; font-size:13px; font-weight:700; color:var(--text);
+  background:var(--card); border:1px solid var(--line); border-radius:10px;
+  text-decoration:none; transition:all .15s;
+}
+.back:active { transform:scale(.96); background:#2a2f3d; }
+.crumbs { flex:1; min-width:0; font-size:12px; color:var(--sub); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:right; }
+.crumbs a { color:var(--accent); text-decoration:none; margin:0 2px; }
+.titlerow { padding:8px 16px 0; }
+.titlerow h1 { margin:0; font-size:18px; font-weight:800; }
+.subline { margin-top:2px; color:var(--sub); font-size:12px; }
+
+/* ========== 分类Tab ========== */
+.tabs {
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  gap:0; margin:12px 14px 10px;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:12px; overflow:hidden;
+}
+.tab {
+  padding:11px 4px; font-size:14px; font-weight:800;
+  color:var(--sub); background:transparent; border:0; cursor:pointer;
+  text-align:center; transition:all .2s;
+}
+.tab .tnum { display:inline-block; font-size:11px; margin-left:3px; padding:2px 6px; background:rgba(255,255,255,.06); border-radius:999px; }
+.tab.on { background:var(--accent); color:#1a1d26; }
+.tab.on .tnum { background:rgba(26,29,38,.25); color:#1a1d26; }
+
+/* ========== 内容区 ========== */
+.container { padding:10px 14px 100px; max-width:720px; margin:0 auto; }
+.sec { }
+.sec-title { display:flex; align-items:center; font-size:17px; font-weight:800; padding:2px 0 10px 10px; }
+.sec-title .cnt { font-size:12px; color:var(--sub); font-weight:600; margin-left:8px; align-self:flex-end; }
+.list { display:flex; flex-direction:column; gap:10px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 14px 14px 12px; display:flex; gap:12px; }
+.card .idx { flex:0 0 auto; width:28px; height:28px; border-radius:8px; background:rgba(201,169,106,.15); color:var(--accent); font-weight:800; font-size:13px; display:grid; place-items:center; flex-shrink:0; }
+.card .cbody { flex:1; min-width:0; }
+.card .title { color:var(--text); font-size:15px; font-weight:700; text-decoration:none; line-height:1.45; display:block; margin-bottom:6px; word-break:break-word; }
+.card .title:hover { color:var(--accent); }
+.card .sum { color:var(--sub); font-size:13px; line-height:1.55; margin-bottom:8px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.card .meta { font-size:12px; color:var(--sub); }
+.card .meta .src { font-weight:700; }
+.empty { padding:24px 12px; text-align:center; color:var(--sub); font-size:14px; background:var(--card); border-radius:14px; border:1px dashed var(--line); }
+.footer { text-align:center; color:var(--sub); font-size:12px; margin-top:28px; padding-bottom:10px; }
+.banner { margin:14px; padding:10px 14px; background:rgba(90,143,123,.15); border:1px solid rgba(90,143,123,.4); border-radius:12px; font-size:13px; color:#8abaa5; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="navrow">
+    <a href="index.html" class="back" onclick="if(history.length>1 && document.referrer.indexOf('github.io')>=0){history.back();return false;}">← 资讯列表</a>
+    <a href="../workbench-mobile.html" class="back">🎯 工作台</a>
+    <div class="crumbs"><a href="../workbench-mobile.html">工作台</a>›<a href="index.html">资讯</a>›当日</div>
+  </div>
+  <div class="titlerow">
+    <h1>📰 每日资讯 2026年09月27日 星期日</h1>
+    <div class="subline">共 24 条 · 自动抓取于 12:09</div>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-i="0">🎮 梦幻<span class="tnum">8</span></button>
+    <button class="tab"    data-i="1">🤖 AI<span class="tnum">8</span></button>
+    <button class="tab"    data-i="2">🌺 兰花<span class="tnum">8</span></button>
+  </div>
+</div>
+
+<div class="container" id="cont">
+  
+        <section class="sec" id="sec-0" data-cat="梦幻西游" style="display:block;">
+          <div class="sec-title" style="border-left:5px solid #c9a96a;"><span style="font-size:22px;margin-right:6px;">🎮</span>梦幻西游 <span class="cnt">8条</span></div>
+          <div class="list">
+                <div class="card">
+                  <div class="idx">01</div>
+                  <div class="cbody">
+                    <a class="title" href="https://ecard.163.com/news/intro/dy/2015/10/12/20637_573394.html" target="_blank" rel="noopener">快速充值 消费查询</a>
+                    <div class="sum">快速充值 消费查询</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">02</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.gm.163.com/user_help.html?kind_id=16?from_xyqcom" target="_blank" rel="noopener">密码找回 解除密保</a>
+                    <div class="sum">密码找回 解除密保</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">03</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.163.com/news/20260921/4905_1314435.html" target="_blank" rel="noopener">[畅玩服]925花好月圆，小叶带你一铲暴富 09/21</a>
+                    <div class="sum">[畅玩服]925花好月圆，小叶带你一铲暴富 09/21</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">04</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.163.com/news/20260926/4905_1315119.html" target="_blank" rel="noopener">[畅玩服]帮派联赛总决赛：华夏率先拿到赛点 09/26</a>
+                    <div class="sum">[畅玩服]帮派联赛总决赛：华夏率先拿到赛点 09/26</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">05</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.163.com/news/20260926/4905_1315113.html" target="_blank" rel="noopener">[畅玩服]帮派联赛最强复仇局今夜激情开战！ 09/25</a>
+                    <div class="sum">[畅玩服]帮派联赛最强复仇局今夜激情开战！ 09/25</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">06</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.163.com/news/20260924/4905_1314942.html" target="_blank" rel="noopener">[时间服]【明月几时】今日开服！开服攻略快来查收 09/25</a>
+                    <div class="sum">[时间服]【明月几时】今日开服！开服攻略快来查收 09/25</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">07</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.163.com/news/20260924/4905_1315030.html" target="_blank" rel="noopener">[时间服]群雄逐鹿·第五赛季第二日战况一览 09/24</a>
+                    <div class="sum">[时间服]群雄逐鹿·第五赛季第二日战况一览 09/24</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">08</div>
+                  <div class="cbody">
+                    <a class="title" href="https://xyq.163.com/news/20260924/4905_1315019.html" target="_blank" rel="noopener">[时间服]第242届武神坛决赛回顾：钓鱼岛光速夺冠 09/24</a>
+                    <div class="sum">[时间服]第242届武神坛决赛回顾：钓鱼岛光速夺冠 09/24</div>
+                    <div class="meta"><span class="src" style="color:#c9a96a">🎮 梦幻西游官网</span></div>
+                  </div>
+                </div></div>
+        </section>
+        <section class="sec" id="sec-1" data-cat="AI资讯" style="display:none;">
+          <div class="sec-title" style="border-left:5px solid #5f7aa8;"><span style="font-size:22px;margin-right:6px;">🤖</span>AI资讯 <span class="cnt">8条</span></div>
+          <div class="list">
+                <div class="card">
+                  <div class="idx">01</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/09/498478.html" target="_blank" rel="noopener">索辰科技加码世界模型，与战略投资企业美梦空间联合发布具身模型与物理测评标准</a>
+                    <div class="sum">“世界模型”开始成为具身智能跨越商业化“奇点”的新叙事。</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">02</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/09/498271.html" target="_blank" rel="noopener">AI开始研究Physical AI：FSD级团队亮出首版模型Simate-beta，空降RoboDojo</a>
+                    <div class="sum">Simate将训练、推理与评测全流程接入自研Infra，通过极致的任务编排与资源调度，同时并行推进数十条相互独立的研究路线。</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">03</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/09/497624.html" target="_blank" rel="noopener">笔记本跑7000亿参数GLM！无GPU也行? SSD当显存用火爆GitHub</a>
+                    <div class="sum">GitHub现在最火热的大模型开源小蜂鸟Colibrì是个啥？</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">04</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/09/497613.html" target="_blank" rel="noopener">在云栖大会，我终于看懂了米哈游千亿AI野心</a>
+                    <div class="sum">大伟哥：如果做不到，一年两年之后过来打我脸</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">05</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/09/497425.html" target="_blank" rel="noopener">谷歌TPU跑Kimi比英伟达GPU快57%！用的还是DeepSeek推理框架</a>
+                    <div class="sum">vLLM人马创业公司团队出品</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">06</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/09/497382.html" target="_blank" rel="noopener">OpenAI失控Agent还找DeepSeek、Kimi当外援！近百万条作案短链曝光</a>
+                    <div class="sum">还把「密钥」叫战利品</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">07</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/09/497278.html" target="_blank" rel="noopener">“AlphaGo”杀进足球场！自我对弈140年，机器人成“梅西终结者”</a>
+                    <div class="sum">“AlphaGo”杀进足球场！自我对弈140年，机器人成“梅西终结者”</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">08</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.qbitai.com/2026/09/497177.html" target="_blank" rel="noopener">OpenAI闯大祸！GPT竟黑进医保系统，黄仁勋：管不住就关掉</a>
+                    <div class="sum">OpenAI闯大祸！GPT竟黑进医保系统，黄仁勋：管不住就关掉</div>
+                    <div class="meta"><span class="src" style="color:#5f7aa8">🤖 量子位</span></div>
+                  </div>
+                </div></div>
+        </section>
+        <section class="sec" id="sec-2" data-cat="兰花知识" style="display:none;">
+          <div class="sec-title" style="border-left:5px solid #5a8f7b;"><span style="font-size:22px;margin-right:6px;">🌺</span>兰花知识 <span class="cnt">8条</span></div>
+          <div class="list">
+                <div class="card">
+                  <div class="idx">01</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E5%A4%8F%E5%A4%A9%E5%85%B0%E8%8A%B1%E9%81%AE%E9%98%B3%E7%BD%91%E8%A6%81%E9%80%89%E5%A4%9A%E5%B0%91%E9%92%88%EF%BC%9F" target="_blank" rel="noopener">夏天兰花遮阳网要选多少针？</a>
+                    <div class="sum">建议选6针遮阳网（遮光约75%），或者双层3针叠加；阳台党如果没有遮阳网，可以搬到北阳台过夏，安全省心。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">02</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E6%96%B0%E6%89%8B%E5%85%BB%E5%85%B0%E4%BB%8E%E8%BF%994%E4%B8%AA%E5%93%81%E7%A7%8D%E8%B5%B7%E6%AD%A5%EF%BC%8C100%25%E4%B8%8D%E7%BF%BB%E8%BD%A6" target="_blank" rel="noopener">新手养兰从这4个品种起步，100%不翻车</a>
+                    <div class="sum">①墨兰『企黑』：最耐阴好养、冬天开花浓香；②建兰『小桃红』：一年多次开花、泼辣好管理；③春兰『大富贵』：经典荷瓣花大花香；④杂交兰『台北小姐』：便宜大颗、新手练手神器。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">03</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E5%85%B0%E8%8A%B1%E6%9C%80%E9%80%82%E5%AE%9C%E7%9A%84%E6%B8%A9%E5%BA%A6%E5%8C%BA%E9%97%B4%E6%98%AF%E5%A4%9A%E5%B0%91%EF%BC%9F" target="_blank" rel="noopener">兰花最适宜的温度区间是多少？</a>
+                    <div class="sum">大多数中国兰花（春兰蕙兰建兰墨兰）最舒服的温度是18-28℃，低于5℃要防冻，高于35℃要降温通风，这两个温度是生死线。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">04</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E5%85%B0%E8%8A%B1%E5%8F%B6%E7%89%87%E9%95%BF%E9%BB%91%E6%96%91%E5%B0%B1%E6%98%AF%E7%82%AD%E7%96%BD%E7%97%85%E5%90%97%EF%BC%9F%E4%B8%8D%E4%B8%80%E5%AE%9A" target="_blank" rel="noopener">兰花叶片长黑斑就是炭疽病吗？不一定</a>
+                    <div class="sum">也可能是：①肥害烧尖（叶尖焦黑往后扩）；②晒伤（面向阳光那一面集中出现）；③冻害（水渍状褐斑）；④药害浓度高了。先找原因再下药。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">05</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E5%85%B0%E8%8A%B1%E5%8F%B6%E7%89%87%E5%8F%91%E9%BB%84%E7%9A%848%E7%A7%8D%E5%8E%9F%E5%9B%A0%E5%AF%B9%E7%85%A7%E8%A1%A8" target="_blank" rel="noopener">兰花叶片发黄的8种原因对照表</a>
+                    <div class="sum">①老苗自然退草（从叶尖均匀黄，整苗同步）：正常；②新叶发黄发软：水大烂根；③叶尖焦黄：肥害/根闷；④叶片局部黑斑：病害；⑤叶脉黄缺绿：缺肥；⑥整叶均匀黄：光照不足；⑦黄叶带透明：冻害；⑧黄叶一碰就掉：茎腐前兆。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">06</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E6%96%B0%E6%89%8B%E6%8E%A8%E8%8D%90%E7%9A%84%E4%B8%A4%E6%AC%BE%E5%85%B0%E8%8A%B1%E8%82%A5" target="_blank" rel="noopener">新手推荐的两款兰花肥</a>
+                    <div class="sum">①花多多1号（均衡肥，20-20-20）生长期灌根通用；②花多多2号（高磷肥，10-30-20）花苞期喷叶+灌根促花。都稀释1000倍用。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">07</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E5%85%BB%E5%85%B0%E6%9C%80%E5%BF%8C%E8%AE%B3%E7%9A%845%E4%BB%B6%E4%BA%8B%EF%BC%8C%E6%96%B0%E6%89%8B%E5%87%A0%E4%B9%8E%E5%85%A8%E4%B8%AD" target="_blank" rel="noopener">养兰最忌讳的5件事，新手几乎全中</a>
+                    <div class="sum">①天天手贱拔起来看根；②天天浇水生怕干死；③今天看教程加个肥明天看文章换个植料；④一盆生病不隔离全室传染；⑤盲目追求名贵品种，普草都没养活先买天价苗。管住手，少折腾，兰花反而养得好。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="idx">08</div>
+                  <div class="cbody">
+                    <a class="title" href="https://www.baidu.com/s?wd=%E5%85%B0%E8%8A%B1%20%E5%85%B0%E8%8A%B1%E6%96%BD%E8%82%A5%E5%8E%9F%E5%88%99%EF%BC%9A%E5%AE%81%E6%B7%A1%E5%8B%BF%E6%B5%93%EF%BC%8C%E8%96%84%E8%82%A5%E5%8B%A4%E6%96%BD" target="_blank" rel="noopener">兰花施肥原则：宁淡勿浓，薄肥勤施</a>
+                    <div class="sum">兰花根细不耐浓肥，任何肥料必须按说明书再稀释1-2倍使用。生长期（春秋）每10天一次薄肥，夏冬两季完全停肥。</div>
+                    <div class="meta"><span class="src" style="color:#5a8f7b">🌺 兰花养护知识库</span></div>
+                  </div>
+                </div></div>
+        </section>
+  <div class="footer">本页面每天 08:00 自动生成 · 数据来自公开RSS/官网新闻</div>
+</div>
+
+<script>
+(function(){
+  var tabs = document.querySelectorAll('#tabs .tab');
+  var secs = document.querySelectorAll('.sec');
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){
+      var i = +this.getAttribute('data-i');
+      tabs.forEach(function(x){x.classList.remove('on');});
+      this.classList.add('on');
+      secs.forEach(function(s, j){
+        s.style.display = (j===i)?'block':'none';
+      });
+      window.scrollTo({top:0,behavior:'instant'});
+    });
+  });
+  // 防止浏览器后退按钮卡到微信
+  window.addEventListener('popstate', function(){});
+})();
+</script>
+</body>
+</html>
